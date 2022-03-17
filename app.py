@@ -5,8 +5,8 @@ app = Flask(__name__)
 
 paypalrestsdk.configure({
   "mode": "sandbox", # sandbox or live
-  "client_id": "CLIENT_ID",
-  "client_secret": "CLIENT_SECRET" })
+  "client_id": "ARInOSQswDDw2JXnDpyAdDTs9Dgdf9tNDBUq-MSC9nRRICQrPXh7p8XiGYsqJlDin-j5oe6ZKN8P-Yrt",
+  "client_secret": "EOOuzw2fQH3aKlrRRNts_mR3nNu_wjuuXShoKKZ_lP3R0KBMndy203bPiBssayygnLqZMH4mV4VR11Cg" })
 
 @app.route('/')
 def index():
