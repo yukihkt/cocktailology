@@ -1,11 +1,12 @@
-.grad1{
-background: rgb(208,156,0);
-background: linear-gradient(90deg, rgba(208,156,0,0.7234244039412641) 0%, rgba(253,182,29,0.7654412106639531) 50%);
+.stylebody{
+background: #f8f9fa;
+font-family: 'Josefin Sans';font-size: 15px;
 }
 
 html, body {
   overflow-x: hidden;
 }
+
 
 @media screen and (max-width: 960px) {
     main {
@@ -58,8 +59,13 @@ html, body {
     }
 }
 
-.container {
+#container {
     max-width: 960px;
+    border-style: none;
+    background-color:transparent !important;
+    list-style: none;
+    display: block;
+    margin-top: 30px;
 }
 
 header {
@@ -138,20 +144,13 @@ header .hero p {
 
 #myInput {
   background-image: url('/static/images/search-512.png');
-  background-position: 10px 10px;
+  background-position: 10px 7px;
   background-repeat: no-repeat;
   width: 100%;
   font-size: 16px;
   padding: 12px 40px 12px 40px;
   border: 1px solid #ddd;
-  margin-bottom: 12px;
-}
-
-
-ul#container {
-    list-style: none;
-    display: block;
-    border: 1px solid #bbb; background-color: #efefef;
+  margin-bottom: 22px;
 }
 
 

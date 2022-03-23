@@ -67,9 +67,9 @@ def about():
     return render_template('about.html')
 
 
-@app.route('/contact')
-def contact():
-    return render_template('contact.html')
+@app.route('/account')
+def account():
+    return render_template('account.html')
 
 @app.route('/service-worker.js')
 def sw():
