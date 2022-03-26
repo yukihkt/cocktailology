@@ -23,19 +23,19 @@ CORS(app)
 class Order(db.Model):
     __tablename__ = 'order'
 
-    orderID = db.Column(db.Integer, primary_key=True)
-    accountID = db.Column(db.String(32), nullable=False)
+    order_id = db.Column(db.Integer, primary_key=True)
+    account_id = db.Column(db.String(32), nullable=False)
     orderStatus = db.Column(db.String(10), nullable=False) 
     created = db.Column(db.DateTime, nullable=False, default=datetime.now)
-    modified = db.Column(db.DateTime, nullable=False, default=datetime.now, onupdate=datetime.now)
+    
 
     def json(self):
         dto = {
-            'orderID': self.orderID,
-            'accountID': self.accountID,
+            'order_id': self.order_id,
+            'account_id': self.account_id,
             'orderStatus': self.orderStatus,
             'created': self.created,
-            'modified': self.modified
+            
         }
 
         dto['order_item'] = []
@@ -50,7 +50,7 @@ class Order_Item(db.Model):
 
     item_id = db.Column(db.Integer, primary_key=True)
     order_id = db.Column(db.ForeignKey(
-        'order.orderID', ondelete='CASCADE', onupdate='CASCADE'), nullable=False, index=True)
+        'order.order_id', ondelete='CASCADE', onupdate='CASCADE'), nullable=False, index=True)
 
     packageName= db.Column(db.String(64), nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
@@ -58,13 +58,13 @@ class Order_Item(db.Model):
     # order_id = db.Column(db.String(36), db.ForeignKey('order.order_id'), nullable=False)
     # order = db.relationship('Order', backref='order_item')
     order = db.relationship(
-        'Order', primaryjoin='Order_Item.order_id == Order.orderID', backref='order_item')
+        'Order', primaryjoin='Order_Item.order_id == Order.order_id', backref='order_item')
 
     def json(self):
         return {'item_id': self.item_id, 'packageName': self.packageName, 'quantity': self.quantity, 'order_id': self.order_id}
 
 
-@app.route("/order")
+@app.route("/")
 def get_all():
     orderlist = Order.query.all()
     if len(orderlist):
@@ -107,13 +107,13 @@ def find_by_order_id(order_id):
 
 @app.route("/order", methods=['POST'])
 def create_order():
-    accountID = request.json.get('accountID', None)
-    order = Order(accountID=accountID, status='NEW')
+    account_id = request.json.get('account_id', None)
+    order = Order(account_id=account_id, status='NEW')
 
     cart_item = request.json.get('cart_item')
     for item in cart_item:
         order.order_item.append(Order_Item(
-            book_id=item['packageName'], quantity=item['quantity']))
+            order_id=item['packageName'], quantity=item['quantity']))
 
     try:
         db.session.add(order)
@@ -174,4 +174,4 @@ def update_order(order_id):
 
 if __name__ == '__main__':
     print("This is flask for " + os.path.basename(__file__) + ": manage orders ...")
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5003, debug=True)

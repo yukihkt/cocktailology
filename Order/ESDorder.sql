@@ -32,20 +32,19 @@ USE `order`;
 
 DROP TABLE IF EXISTS `order`;
 CREATE TABLE IF NOT EXISTS `order` (
-  `orderID` int(11) NOT NULL AUTO_INCREMENT,
-  `accountID` varchar(32) NOT NULL,
+  `order_id` int(11) NOT NULL AUTO_INCREMENT,
+  `account_id` int(32) NOT NULL,
   `orderStatus` varchar(10) NOT NULL DEFAULT 'NEW',
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `modified` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`orderID`)
+  PRIMARY KEY (`order_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `order`
 --
 
-INSERT INTO `order` (`orderID`, `accountID`, `orderStatus`, `created`, `modified`) VALUES
-(1, 'Apple TAN', 'NEW', '2022-06-12 02:14:55', '2022-06-12 02:14:55');
+INSERT INTO `order` (`order_id`, `account_id`, `orderStatus`, `created`) VALUES
+(1, '1', 'NEW', '2022-06-12 02:14:55');
 
 -- --------------------------------------------------------
 
@@ -60,7 +59,7 @@ CREATE TABLE IF NOT EXISTS `order_item` (
   `packageName` char(64) NOT NULL,
   `quantity` int(11) NOT NULL,
   PRIMARY KEY (`item_id`),
-  KEY `FK_order_id` (`order_id`)
+  KEY `FK_orderID` (`order_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 --
@@ -79,7 +78,7 @@ INSERT INTO `order_item` (`item_id`, `order_id`, `packageName`, `quantity`) VALU
 -- Constraints for table `order_item`
 --
 ALTER TABLE `order_item`
-  ADD CONSTRAINT `FK_order_id` FOREIGN KEY (`order_id`) REFERENCES `order` (`orderID`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `FK_order_id` FOREIGN KEY (`order_id`) REFERENCES `order` (`order_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
