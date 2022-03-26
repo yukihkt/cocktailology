@@ -1,5 +1,6 @@
 ## email microservice will email the recepient and return the customer's email in the function when it is completed.
 # inputs required: customer email, customer name (optional)
+# receiver of AMPQ direct msg from create_account.py
 
 
 # to create an account, user has to use facebook. email is therefore already VERIFIED and does not need further verification that the email exists in this microservice.
