@@ -24,7 +24,7 @@ class Order(db.Model):
     __tablename__ = 'order'
 
     order_id = db.Column(db.Integer, primary_key=True)
-    account_id = db.Column(db.String(32), nullable=False)
+    account_id = db.Column(db.Integer, nullable=False)
     orderStatus = db.Column(db.String(10), nullable=False) 
     created = db.Column(db.DateTime, nullable=False, default=datetime.now)
     

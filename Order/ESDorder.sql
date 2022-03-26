@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS `order` (
 --
 
 INSERT INTO `order` (`order_id`, `account_id`, `orderStatus`, `created`) VALUES
-(1, '1', 'NEW', '2022-06-12 02:14:55');
+(1, 1, 'NEW', '2022-06-12 02:14:55');
 
 -- --------------------------------------------------------
 
