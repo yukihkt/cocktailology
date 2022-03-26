@@ -10,7 +10,7 @@ print( results )
 
 # invoke order microservice to create an order
 order_id = '2'
-order_details = { "account_id": "2", "orderStatus": "NEW", "created": "2022-06-12 02:14:55", "order-item":[{
+order_details = { "account_id": "2", "orderStatus": "NEW", "created": "2022-06-12 02:14:55", "order_item":[{
             "item_id": 1, 
             "order_id": 1, 
             "packageName": "Bloody Mary", 
