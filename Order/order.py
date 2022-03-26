@@ -24,7 +24,7 @@ class Order(db.Model):
     __tablename__ = 'order'
 
     order_id = db.Column(db.Integer, primary_key=True)
-    account_id = db.Column(db.String(32), nullable=False)
+    account_id = db.Column(db.Integer, nullable=False)
     orderStatus = db.Column(db.String(10), nullable=False) 
     created = db.Column(db.DateTime, nullable=False, default=datetime.now)
     
@@ -64,7 +64,7 @@ class Order_Item(db.Model):
         return {'item_id': self.item_id, 'packageName': self.packageName, 'quantity': self.quantity, 'order_id': self.order_id}
 
 
-@app.route("/")
+@app.route("/order")
 def get_all():
     orderlist = Order.query.all()
     if len(orderlist):
