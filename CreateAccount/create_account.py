@@ -6,9 +6,9 @@ from flask_cors import CORS
 import os, sys
 
 import requests
-from invokes import invoke_http
+from Account.invokes import invoke_http
 
-import amqp_setup
+import CreateAccount.amqp_setup as amqp_setup
 import pika
 import json
 
@@ -16,7 +16,7 @@ app = Flask(__name__)
 CORS(app)
 
 #book_URL = "http://localhost:5000/book"
-order_URL = "http://localhost:5001/order"
+account_URL = "http://localhost:5001/account"
 shipping_record_URL = "http://localhost:5002/shipping_record"
 #activity_log_URL = "http://localhost:5003/activity_log"
 #error_URL = "http://localhost:5004/error"
