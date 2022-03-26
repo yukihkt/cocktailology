@@ -89,7 +89,7 @@ def find_by_accountid(account_id):
 
 
 # TODO: for shub to adjust, since login and signin same for fb (for now??) maybe redirect user straightaway to home page in the first if statement
-@app.route("/book/<string:account_id>", methods=['POST'])
+@app.route("/account/<string:account_id>", methods=['POST'])
 def create_book(account_id):
     if (Account.query.filter_by(account_id=account_id).first()):
         return jsonify(
