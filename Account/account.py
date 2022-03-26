@@ -16,7 +16,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3
 # app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
 # set dbURL=mysql+mysqlconnector://root@localhost:3306/account
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
+# app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
 
 db = SQLAlchemy(app)
 
@@ -26,9 +26,10 @@ class Account(db.Model):
     __tablename__ = 'account'
 
     account_id = db.Column(db.Integer, primary_key=True)
-    account_name = db.Column(db.String(32), nullable=False)
-    shipping_add = db.Column(db.String(32), nullable=False)
-    email = db.Column(db.String(32), nullable=False)
+    account_name = db.Column(db.String(20), nullable=False)
+    email = db.Column(db.String(50), nullable=False)
+    shipping_add = db.Column(db.String(100), nullable=False)
+
     # status = db.Column(db.String(10), nullable=False)
     # created = db.Column(db.DateTime, nullable=False, default=datetime.now)
     # modified = db.Column(db.DateTime, nullable=False, default=datetime.now, onupdate=datetime.now)
@@ -58,7 +59,7 @@ def get_all():
             {
                 "code": 200,
                 "data": {
-                    "orders": [account.json() for account in accountlist]
+                    "accounts": [account.json() for account in accountlist]
                 }
             }
         )
@@ -128,4 +129,4 @@ def create_book(account_id):
 
 if __name__ == '__main__':
     print("This is flask for " + os.path.basename(__file__) + ": manage accounts ...")
-    app.run(host='0.0.0.0', port=5001, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
