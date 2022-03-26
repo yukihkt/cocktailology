@@ -12,3 +12,5 @@
 # pip install pika
 # python -m pip install requests
 # python -m pip install flask_cors create_account.py
+
+# docker run -d --hostname esd-rabbit --name rabbitmq-mgmt -p 5672:5672 -p 15672:15672 rabbitmq:3-management

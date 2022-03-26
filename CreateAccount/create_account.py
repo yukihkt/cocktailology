@@ -15,24 +15,21 @@ import json
 app = Flask(__name__)
 CORS(app)
 
-#book_URL = "http://localhost:5000/book"
-account_URL = "http://localhost:5001/account"
-shipping_record_URL = "http://localhost:5002/shipping_record"
-#activity_log_URL = "http://localhost:5003/activity_log"
-#error_URL = "http://localhost:5004/error"
+account_URL = "http://localhost:5000/account"
 
 
-@app.route("/place_order", methods=['POST'])
+
+@app.route("/create_account", methods=['POST'])
 def place_order():
     # Simple check of input format and data of the request are JSON
     if request.is_json:
         try:
-            order = request.get_json()
-            print("\nReceived an order in JSON:", order)
+            new_account_details = request.get_json()
+            print("\nReceived an account in JSON:", new_account_details)
 
             # do the actual work
             # 1. Send order info {cart items}
-            result = processPlaceOrder(order)
+            result = processCreateAccount(new_account_details)
             print('\n------------------------')
             print('\nresult: ', result)
             return jsonify(result), result["code"]
@@ -46,7 +43,7 @@ def place_order():
 
             return jsonify({
                 "code": 500,
-                "message": "place_order.py internal error: " + ex_str
+                "message": "create_account.py internal error: " + ex_str
             }), 500
 
     # if reached here, not a JSON request.
@@ -56,105 +53,42 @@ def place_order():
     }), 400
 
 
-def processPlaceOrder(order):
+def processCreateAccount(new_account_details):
     # 2. Send the order info {cart items}
     # Invoke the order microservice
-    print('\n-----Invoking order microservice-----')
-    order_result = invoke_http(order_URL, method='POST', json=order)
-    print('order_result:', order_result)
+    print('\n-----Invoking account microservice-----')
+    account_creation_result = invoke_http(account_URL, method='POST', json=new_account_details)
+    print('account_creation_result:', account_creation_result)
   
 
     # Check the order result; if a failure, send it to the error microservice.
-    code = order_result["code"]
-    message = json.dumps(order_result)
+    code = account_creation_result["code"]
+    message = json.dumps(account_creation_result)
 
+   
     if code not in range(200, 300):
-        # Inform the error microservice
-        #print('\n\n-----Invoking error microservice as order fails-----')
-        print('\n\n-----Publishing the (order error) message with routing_key=order.error-----')
-
-        # invoke_http(error_URL, method="POST", json=order_result)
-        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="order.error", 
-            body=message, properties=pika.BasicProperties(delivery_mode = 2)) 
-        # make message persistent within the matching queues until it is received by some receiver 
-        # (the matching queues have to exist and be durable and bound to the exchange)
-
-        # - reply from the invocation is not used;
-        # continue even if this invocation fails        
-        print("\nOrder status ({:d}) published to the RabbitMQ Exchange:".format(
-            code), order_result)
-
-        # 7. Return error
-        return {
-            "code": 500,
-            "data": {"order_result": order_result},
-            "message": "Order creation failure sent for error handling."
-        }
-
-    # Notice that we are publishing to "Activity Log" only when there is no error in order creation.
-    # In http version, we first invoked "Activity Log" and then checked for error.
-    # Since the "Activity Log" binds to the queue using '#' => any routing_key would be matched 
-    # and a message sent to “Error” queue can be received by “Activity Log” too.
+        # TODO: for shub to error handle if fb acc doesnt exist?
+        pass
 
     else:
-        # 4. Record new order
-        # record the activity log anyway
-        #print('\n\n-----Invoking activity_log microservice-----')
-        print('\n\n-----Publishing the (order info) message with routing_key=order.info-----')        
-
-        # invoke_http(activity_log_URL, method="POST", json=order_result)            
-        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="order.info", 
+        print('\n\n-----Publishing the (newly created account info) message with routing_key=create.success-----')        
+        
+        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="create.success", 
             body=message)
     
-    print("\nOrder published to RabbitMQ Exchange.\n")
+    print("\nAccount details published to RabbitMQ Exchange.\n")
     # - reply from the invocation is not used;
     # continue even if this invocation fails
-    
-    # 5. Send new order to shipping
-    # Invoke the shipping record microservice
-    print('\n\n-----Invoking shipping_record microservice-----')    
-    
-    shipping_result = invoke_http(
-        shipping_record_URL, method="POST", json=order_result['data'])
-    print("shipping_result:", shipping_result, '\n')
 
-    # Check the shipping result;
-    # if a failure, send it to the error microservice.
-    code = shipping_result["code"]
-    if code not in range(200, 300):
-        # Inform the error microservice
-        #print('\n\n-----Invoking error microservice as shipping fails-----')
-        print('\n\n-----Publishing the (shipping error) message with routing_key=shipping.error-----')
-
-        # invoke_http(error_URL, method="POST", json=shipping_result)
-        message = json.dumps(shipping_result)
-        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="shipping.error", 
-            body=message, properties=pika.BasicProperties(delivery_mode = 2))
-
-        print("\nShipping status ({:d}) published to the RabbitMQ Exchange:".format(
-            code), shipping_result)
-
-        # 7. Return error
-        return {
-            "code": 400,
-            "data": {
-                "order_result": order_result,
-                "shipping_result": shipping_result
-            },
-            "message": "Simulated shipping record error sent for error handling."
-        }
-
-    # 7. Return created order, shipping record
     return {
         "code": 201,
         "data": {
-            "order_result": order_result,
-            "shipping_result": shipping_result
+            "account_creation_result": account_creation_result
         }
     }
 
 
 # Execute this program if it is run as a main script (not by 'import')
 if __name__ == "__main__":
-    print("This is flask " + os.path.basename(__file__) + " for placing an order...")
+    print("This is flask " + os.path.basename(__file__) + " for creating an account ...")
     app.run(host="0.0.0.0", port=5100, debug=True)
