@@ -105,8 +105,8 @@ def find_by_order_id(order_id):
     ), 404
 
 
-@app.route("/order", methods=['POST'])
-def create_order():
+@app.route("/order/<string:order_id>", methods=['POST'])
+def create_order(order_id):
     account_id = request.json.get('account_id', None)
     order = Order(account_id=account_id, status='NEW')
 
