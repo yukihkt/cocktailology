@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS `order_item` (
   `packageName` char(64) NOT NULL,
   `quantity` int(11) NOT NULL,
   PRIMARY KEY (`item_id`),
-  KEY `FK_orderID` (`order_id`)
+  KEY `FK_order_id` (`order_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 --
