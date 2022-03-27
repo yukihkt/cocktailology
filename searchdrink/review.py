@@ -1,13 +1,16 @@
+import sys
+import os
 from flask import Flask, request, jsonify
 from sqlalchemy.sql import func
 from flask_sqlalchemy import SQLAlchemy
- 
+from flask_cors import CORS
+
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:3306/review'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
  
 db = SQLAlchemy(app)
- 
+CORS(app) 
  
 class Review(db.Model):
     __tablename__ = 'review'
@@ -66,45 +69,7 @@ def find_by_isbn13(strDrink):
                 "message": "Review not found."
             }
         ), 404
+  
 
-# can change the code to write post if we want 
-# @app.route("/book/<string:isbn13>", methods=['POST'])
-# def create_book(isbn13):
-#     if (Book.query.filter_by(isbn13=isbn13).first()):
-#         return jsonify(
-#             {
-#                 "code": 400,
-#                 "data": {
-#                     "isbn13": isbn13
-#                 },
-#                 "message": "Book already exists."
-#             }
-#         ), 400
-
-#     data = request.get_json()
-#     book = Book(isbn13, **data)
-
-#     try:
-#         db.session.add(book)
-#         db.session.commit()
-#     except:
-#         return jsonify(
-#             {
-#             "code": 500,
-#             "data": {
-#                 "isbn13": isbn13
-#             },
-#             "message": "An error occurred creating the book."
-#         }
-#     ), 500
-
-#     return jsonify(
-#         {
-#             "code": 201,
-#             "data": book.json()
-#         }
-#     ), 201
- 
- 
 if __name__ == '__main__':
-    app.run(port=5090, debug=True)
+    app.run(port=5021, debug=True)
