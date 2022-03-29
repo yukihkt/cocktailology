@@ -23,9 +23,28 @@
         <div class="col"> <img src="{{ url_for('static', filename='images/giphy.gif') }}" style="width:400px;height:500px;" /></div>
         <div class="col-3"> <img src="{{ url_for('static', filename='images/2nd_image.gif') }}" style="width:400px;height:500px;" /></div>
     </div> -->
+    <!-- <div id="greeting">
+        <h6>No Name</h6>
+    </div> -->
+    {%if data %}
+        <h1>Welcome {{ data['name'] }}</h1>
+        <script>
+            var info = 
+            localStorage.setItem("name","{{data['name']}}")
+            localStorage.setItem("id","{{data['id']}}")
+            localStorage.setItem("loggedin",1)
+            console.log(localStorage.getItem("acc_info"))
+            console.log(localStorage.getItem("loggedin"))
+        </script>
+    {% else %}
+        <h5>No Data</h5>
+        <script>
+            console.log(localStorage.getItem("acc_info"))
+            console.log(localStorage.getItem("id"))
+        </script>
+    {% endif %}
 
 <script>
-
 const searchCocktail = async (event) => {
   console.log('event ',event.value)
   let value = event.value;

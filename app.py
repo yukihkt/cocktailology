@@ -1,75 +1,56 @@
-from flask import Flask, render_template, jsonify, request
+from flask import Flask,render_template,request, jsonify, url_for, session, redirect
+from flask_dance.contrib.facebook import make_facebook_blueprint, facebook
+
 import requests
-import paypalrestsdk
 
 app = Flask(__name__)
-
-paypalrestsdk.configure({
-  "mode": "sandbox", # sandbox or live
-  "client_id": "ARInOSQswDDw2JXnDpyAdDTs9Dgdf9tNDBUq-MSC9nRRICQrPXh7p8XiGYsqJlDin-j5oe6ZKN8P-Yrt",
-  "client_secret": "EOOuzw2fQH3aKlrRRNts_mR3nNu_wjuuXShoKKZ_lP3R0KBMndy203bPiBssayygnLqZMH4mV4VR11Cg" })
+app.config["SERVER_NAME"] = "localhost:5000"
+app_id = "3173224822906874"
+secret_id = "b40e76368df065f5447a9ffb74c950df"
+app.secret_key = '\xfd{H\xe5<\x95\xf9\xe3\x96.5\xd1\x01O<!/xd5\xa2\xa0\x9fR"\xa1\xa8'
 
 @app.route('/')
-def index():
-    return render_template('index.html')
-
-@app.route('/home')
 def homepage():
     return render_template('home.html')
-
-@app.route('/payment', methods=['POST'])
-def payment():
-
-    payment = paypalrestsdk.Payment({
-        "intent": "sale",
-        "payer": {
-            "payment_method": "paypal"},
-        "redirect_urls": {
-            "return_url": "http://localhost:3000/payment/execute",
-            "cancel_url": "http://localhost:3000/"},
-        "transactions": [{
-            "item_list": {
-                "items": [{
-                    "name": "testitem",
-                    "sku": "12345",
-                    "price": "500.00",
-                    "currency": "USD",
-                    "quantity": 1}]},
-            "amount": {
-                "total": "500.00",
-                "currency": "USD"},
-            "description": "This is the payment transaction description."}]})
-
-    if payment.create():
-        print('Payment success!')
-    else:
-        print(payment.error)
-
-    return jsonify({'paymentID' : payment.id})
-
-@app.route('/execute', methods=['POST'])
-def execute():
-    success = False
-
-    payment = paypalrestsdk.Payment.find(request.form['paymentID'])
-
-    if payment.execute({'payer_id' : request.form['payerID']}):
-        print('Execute success!')
-        success = True
-    else:
-        print(payment.error)
-
-    return jsonify({'success' : success})
-
 
 @app.route('/about')
 def about():
     return render_template('about.html')
 
 
+###############################################################
+facebook_bp = make_facebook_blueprint(
+    client_id=app_id,
+    client_secret=secret_id,
+    redirect_to="fb_auth",
+    scope='email')
+app.register_blueprint(facebook_bp, url_prefix="/login")
+
 @app.route('/account')
 def account():
     return render_template('account.html')
+
+@app.route('/facebook')
+def loggedin():
+    return redirect(url_for("facebook.login"))
+
+
+@app.route('/facebook/authorized')
+def fb_auth():
+    if not facebook.authorized:
+        return redirect(url_for("homepage"))
+    resp = facebook.get("/me?fields=name,id")
+    assert resp.ok, resp.text
+    session["name"] = resp.json().get('name')
+    session["account_id"] = resp.json().get('id')
+    return render_template("home.html", data = resp.json())
+
+@app.route("/facebook/logout")
+def fb_logout():
+    session.clear()
+    return redirect(url_for('homepage'))
+
+############################################################
 
 @app.route('/service-worker.js')
 def sw():
@@ -110,4 +91,4 @@ def cocktail_select(type):
             return "Unexpected Error Occurred"
 
 if __name__ == '__main__':
-    app.run(debug = True)
+    app.run(debug = True, ssl_context='adhoc')

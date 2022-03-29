@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS `account` (
   `email` varchar(50) NOT NULL,
   `shipping_add` varchar(100) NOT NULL,
   PRIMARY KEY (`account_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `account`
