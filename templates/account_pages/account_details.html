@@ -12,7 +12,7 @@
 </head>
 <style>
   body{
-    background-image: url(images/cocktail_background.jpg);
+    background-image: url(../images/cocktail_background.jpg);
     background-size: cover;
     background-attachment: fixed;
   }
@@ -21,18 +21,6 @@
     width:50%;
     padding:40px;
     margin:100px auto;
-  }
-
-  /* Image To Text On Hover */   
-  .hovtxt {
-            opacity:0;
-            transition-duration: 1.2s;
-            transition-timing-function: ease-in-out;
-            height:300px;   
-        }
-        
-  .hovtxt:hover {
-    opacity:1;
   }
 </style>
 <body>
@@ -45,7 +33,7 @@
       <div class="collapse navbar-collapse" id="navbarNavDropdown">
         <ul class="navbar-nav">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="search_package.html">Search Drinks</a>
+            <a class="nav-link active" aria-current="page" href="../search_package.html">Search Drinks</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#">Cart</a>
@@ -55,8 +43,8 @@
               Account
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-              <li><a class="dropdown-item" href="account_pages/account_details.html">Account Details</a></li>
-              <li><a class="dropdown-item" href="account_pages/order_history.html">Order History</a></li>
+              <li><a class="dropdown-item" href="account_details.html">Account Details</a></li>
+              <li><a class="dropdown-item" href="order_history.html">Order History</a></li>
             </ul>
           </li>
         </ul>
@@ -66,17 +54,24 @@
   </div>
   <!-- <section class="bg-dark" style="--bs-bg-opacity: .5;"> -->
   <section>
-    <div class="container hovtxt text-primary " ><div>
       <!-- TODO: replace form action and method -->
-      <form action="#" class="form-control mt-5">
-        <div class="mb-3">
-          <label for="search" class="form-label">Search for a drink here!</label>
-          <input type="search" class="form-control" id="search" aria-describedby="emailHelp">
-          <a href="#" type="button" class="btn btn-dark form-control mt-3">Search</a>
+        <div class="card border-dark mb-3 mt-5">
+          <form action="">
+          <h3 class="card-header ">Name</h3>
+          <div class="card-body text-primary">
+            <div class="m-2 mt-0">
+              <p>Email</p> <input  type="text" placeholder="current email">
+            </div>
+            <div class="m-2">
+              <p>Shipping Address</p>
+              <input  type="text" placeholder="Shipping1" class="mt-0">
+              <input  type="text" placeholder="Shipping2" class="mt-2">
+              <input  type="text" placeholder="Shipping3" class="mt-2">
+            </div>
+            <a href="#" type="button" class="btn btn-primary align-items-end ">Update my details</a>
+          </div>
         </div>
       </form>
-      
-    </div></div>
   </section>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
