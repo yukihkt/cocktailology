@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" 
+    integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" 
+    crossorigin="anonymous">
+    <title>Cocktail Packages</title>
+</head>
+<style>
+    .maintxt {
+        background-image: url(cocktail_background.jpg);
+        background-size: cover;
+    }
+    .crdimg1 {
+        border:none;
+        background-image:url(top1.jpg);
+        background-size:cover;
+        background-position:center;  
+    }
+    .crdimg2 {
+        border:none;
+        background-image:url(top2.jpg);
+        background-size:cover;
+        background-position:center;  
+    }
+    .crdimg3 {
+        border:none;
+        background-image:url(top3.jpg);
+        background-size:cover;
+        background-position:center;  
+    }
+    .cb1,.cb2,.cb3 {
+        background:red;
+        opacity:0;
+        transition-duration: 1s;
+    }
+    .cb1:hover,.cb2:hover,.cb3:hover {
+        opacity:1;
+        background:blue;
+    }
+</style>
+<body>
+
+    <!-- <div class="has-bg-img"> -->
+        <!-- <h2>Hero Section</h2>
+        <h4>It's easy to set background image with Torus Kit</h4> -->
+        <!-- <img class="bg-img" src="cocktail_background.jpg" alt="...">
+        <p class="carousel-caption">Some text here </p>
+      </div> -->
+
+      <!-- <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-sm-6 col-md-8 col-centered">
+                <div class="maintxt">
+                    My great text.
+                </div>
+            </div>
+        </div>
+    </div> -->
+
+    
+    <section class="bg-dark">
+        <div class="container">
+            <div class="card-deck">
+                <div class="card border-info mb-3" style="max-width: 18rem;">
+                    <div class="card-header">Header</div>
+                    <div class="card-body text-info">
+                      <h5 class="card-title">Info card title</h5>
+                      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    </div></div>
+                    <div class="card border-info mb-3" style="max-width: 18rem;">
+                        <div class="card-header">Header</div>
+                        <div class="card-body text-info">
+                          <h5 class="card-title">Info card title</h5>
+                          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        </div></div>
+                        <div class="card border-info mb-3" style="max-width: 18rem;">
+                            <div class="card-header">Header</div>
+                            <div class="card-body text-info">
+                              <h5 class="card-title">Info card title</h5>
+                              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                            </div></div>
+                <div class="card">
+                  <img class="card-img-top" src="..." alt="Card image cap">
+                  <div class="card-body">
+                    <h5 class="card-title">Card title</h5>
+                    <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                  </div>
+                  <div class="card-footer">
+                    <small class="text-muted">Last updated 3 mins ago</small>
+                  </div>
+                </div>
+                <div class="card">
+                  <img class="card-img-top" src="..." alt="Card image cap">
+                  <div class="card-body">
+                    <h5 class="card-title">Card title</h5>
+                    <p class="card-text">This card has supporting text below as a natural lead-in to additional content.</p>
+                  </div>
+                  <div class="card-footer">
+                    <small class="text-muted">Last updated 3 mins ago</small>
+                  </div>
+                </div>
+                <div class="card">
+                  <img class="card-img-top" src="..." alt="Card image cap">
+                  <div class="card-body">
+                    <h5 class="card-title">Card title</h5>
+                    <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This card has even longer content than the first to show that equal height action.</p>
+                  </div>
+                  <div class="card-footer">
+                    <small class="text-muted">Last updated 3 mins ago</small>
+                  </div>
+                </div>
+              </div>
+            
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
+
+</body>
+</html>
