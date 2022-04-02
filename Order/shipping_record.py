@@ -25,7 +25,7 @@ class Shipping_Record(db.Model):
     shippingDate = db.Column(db.DateTime(timezone=True), nullable=False)
     shippingDescription = db.Column(db.String(100), nullable=False)
     status = db.Column(db.String(100), nullable=False, default="pending")
-    orderID =db.Column(db.Integer, ForeignKey('orderID'))
+    orderID =db.Column(db.Integer, ForeignKey('order_id'))
 
     def __init__(self, shippingID, shippingAddress, shippingDate, shippingDescription, status, orderID):
         self.shippingID = shippingID

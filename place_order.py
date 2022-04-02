@@ -17,7 +17,7 @@ CORS(app)
 
 #book_URL = "http://localhost:5000/book"
 order_URL = environ.get('order_URL') or "http://localhost:5000/order" 
-#shipping_record_URL = environ.get('shipping_record_URL') or "http://localhost:5001/shipping_record" 
+shipping_record_URL = environ.get('shipping_record_URL') or "http://localhost:5033/shipping_record" 
 #activity_log_URL = "http://localhost:5002/activity_log"
 #error_URL = "http://localhost:5003/error"
 
@@ -28,7 +28,7 @@ paypalrestsdk.configure({
 
 @app.route('/')
 def index():
-    return render_template('payment.html')
+    return render_template('payment.html') 
 
 @app.route('/payment', methods=['POST'])
 def payment():
