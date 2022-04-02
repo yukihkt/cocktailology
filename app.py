@@ -1,18 +1,17 @@
 from flask import Flask,render_template,request, jsonify, url_for, session, redirect
 from flask_dance.contrib.facebook import make_facebook_blueprint, facebook
-
+from dotenv import load_dotenv
+import os
 import requests
 
 app = Flask(__name__)
 app.config["SERVER_NAME"] = "localhost:5000"
-app_id = "3173224822906874"
-secret_id = "b40e76368df065f5447a9ffb74c950df"
 app.secret_key = '\xfd{H\xe5<\x95\xf9\xe3\x96.5\xd1\x01O<!/xd5\xa2\xa0\x9fR"\xa1\xa8'
 
 ###############################################################
 facebook_bp = make_facebook_blueprint(
-    client_id=app_id,
-    client_secret=secret_id,
+    client_id=os.getenv("app_id"),
+    client_secret=os.getenv("secret_id"),
     redirect_to="fb_auth",
     scope='email')
 app.register_blueprint(facebook_bp, url_prefix="/login")
@@ -42,3 +41,6 @@ def fb_logout():
     return redirect(url_for('homepage'))
 
 ############################################################
+
+if __name__ == "__main__":
+    app.run( port=5000, debug=True, ssl_context='adhoc')
