@@ -6,7 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:3306/cocktail'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/cocktail'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
 
@@ -63,7 +63,7 @@ def get_all():
             {
                 "code": 200,
                 "data": {
-                    "orders": [cocktail.json() for cocktail in cocktaillist]
+                    "cocktail": [cocktail.json() for cocktail in cocktaillist]
                 }
             }
         )
