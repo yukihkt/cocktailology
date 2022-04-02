@@ -10,6 +10,7 @@
 # $ python -m pip install Django
 
 # pip install paypalrestsdk
+# pip install python-dotenv
 
 <!-- from create_account and email ms -->
 # pip install pika
