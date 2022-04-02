@@ -1,12 +1,14 @@
 import sys
 import os
+from os import environ
+
 from flask import Flask, request, jsonify
 from sqlalchemy.sql import func
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/cocktail'
+app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('cocktail_URL') or 'mysql+mysqlconnector://root:root@localhost:3306/cocktail'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
 
@@ -74,7 +76,29 @@ def get_all():
         }
     )
 
+@app.route("/cocktail/<string:cocktail_name>")
+def find_by_cocktail_name(cocktail_name):
+    cocktail = Cocktail.query.filter_by(cocktail_name=cocktail_name).first()
+    if cocktail:
+        return jsonify(
+            {
+                "code": 200,
+                "data": cocktail.json()
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "data": {
+                "cocktail_name": cocktail_name
+            },
+            "message": "Cocktail not found."
+        }
+    ), 404
+
+
+
 
 if __name__ == '__main__':
-    print("This is flask for " + os.path.basename(__file__) + ": cocktails ...")
+    print("This is flask for " + os.path.basename(__file__) + ": cocktail information...")
     app.run(host='0.0.0.0', port=5022, debug=True)

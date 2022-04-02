@@ -2,27 +2,28 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 
 import os, sys
+from os import environ
 
 import requests
 from invokes import invoke_http
+import json
 
 app = Flask(__name__)
 CORS(app)
 
-review_URL = "http://localhost:5021/review"
-drinkinfo_URL = "http://localhost:5022/drink_information"
+review_URL = environ.get('review_URL') or "http://localhost:5021/review"
+cocktail_URL = environ.get('cocktail_URL') or "http://localhost:5022/cocktail"
 
-@app.route("/search_drink")
-def search_drink():
+@app.route("/search_package")
+def search_package():
     # Simple check of input format and data of the request are JSON
     if request.is_json:
         try:
-            drink = request.get_json()
-            print("\nReceived an order in JSON:", drink)
+            cocktail = request.get_json()
+            print("\nReceived a search request in JSON:", cocktail)
 
-            # do the actual work
-            # 1. Send order info {cart items}
-            result = processSearchDrink(drink)
+            # 1. Send package search info {user_input}
+            result = processSearchPackage(cocktail)
             return jsonify(result), result["code"]
 
         except Exception as e:
@@ -34,7 +35,7 @@ def search_drink():
 
             return jsonify({
                 "code": 500,
-                "message": "search_drink.py internal error: " + ex_str
+                "message": "search_package.py internal error: " + ex_str
             }), 500
 
     # if reached here, not a JSON request.
@@ -44,25 +45,25 @@ def search_drink():
     }), 400
 
 
-def processSearchDrink(drink):
+def processSearchPackage(cocktail):
     # 2. Get the drink info
     # Invoke the drink information microservice
-    print('\n-----Invoking drink_information microservice-----')
-    drink_result = invoke_http(drinkinfo_URL, method='GET', json=drink)
-    print('drink_result:', drink_result)
+    print('\n-----Invoking cocktail microservice-----')
+    cocktail_result = invoke_http(cocktail_URL, method='GET', json=cocktail)
+    print('cocktail_result:', cocktail_result)
 
     # 5. Get the review for drink
     # Invoke the review microservice
     print('\n\n-----Invoking review microservice-----')
     review_result = invoke_http(
-        review_URL, json=review_result['strDrink'])
+        review_URL, json=review_result['cocktail_name'])
     print("review_result:", review_result, '\n')
 
-    # 7. Return created order, shipping record
+    # 7. Return created package result
     return {
         "code": 201,
         "data": {
-            "drink_result": drink_result,
+            "cocktail_result": cocktail_result,
             "review_result": review_result
         }
     }
@@ -70,5 +71,5 @@ def processSearchDrink(drink):
 # Execute this program if it is run as a main script (not by 'import')
 if __name__ == "__main__":
     print("This is flask " + os.path.basename(__file__) +
-          " for search drink...")
+          " for search package...")
     app.run(host="0.0.0.0", port=5020, debug=True)
