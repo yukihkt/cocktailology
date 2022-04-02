@@ -1,0 +1,11 @@
+__pycache__/
+
+.env
+/env
+.venv
+
+pyvenv.cfg
+
+/lib
+/scripts
+.DS_Store

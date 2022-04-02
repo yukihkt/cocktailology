@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Cocktailology</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="static/images/2nd_image.gif">
+    <link rel="apple-touch-startup-image" href="static/images/2nd_image.gif">
+    <meta name="apple-mobile-web-app-title" content="Cocktailology">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel = "stylesheet" type="text/css" href="{{url_for('static',filename = 'styles/index.css')}}"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+     <link rel="icon" sizes="192x192" href="{{ url_for('static', filename='images/2nd_image.gif') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}" />
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="http://codepen.io/synthet1c/pen/WrQapG.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <link href='https://fonts.googleapis.com/css?family=Josefin Sans' rel='stylesheet'>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body class = "stylebody">
+<div class="offline-notification">You are offline. Please check your connection.</div>
+<!-- <nav class="navbar navbar-expand-md navbar-light bg-primary mb-3">
+    <div class="container-fluid">
+        <a href="{{ url_for('homepage') }}" class="navbar-brand mr-3">Cocktailology</a>
+        <div class="collapse navbar-collapse" id="navbarToggle">
+            <div class="navbar-nav ml-auto">
+                    <a href="{{ url_for('about') }}" class="nav-link active">About</a>
+                    <a href="{{ url_for('account') }}" class="nav-link active">Account</a>
+            </div>
+        </div>
+    </div>
+</nav> -->
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light" style="overflow-x: hidden">
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation" >
+    <span class="navbar-toggler-icon">
+        <i class="fa fa-navicon" style="color:rgb(87, 87, 87); font-size:28px;"></i>
+    </span>
+  </button>
+        <a class="navbar-brand" href="{{ url_for('homepage') }}" style="color:rgb(0, 0, 0)">Cocktailology</a>
+  <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+    <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
+      <li class="nav-item active">
+        <a class="nav-link" href="{{ url_for('about') }}" style="color:rgb(104, 104, 104)">About</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('account') }}" style="color:rgb(104, 104, 104)">Account</a>
+      </li>
+    </ul>
+  </div>
+</nav> <br>
+
+    {% block content %}
+    
+    {% endblock %}
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+
+
+
+</html>
