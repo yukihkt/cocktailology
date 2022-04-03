@@ -16,6 +16,14 @@ facebook_bp = make_facebook_blueprint(
     scope='email')
 app.register_blueprint(facebook_bp, url_prefix="/login")
 
+@app.route('/')
+def homepage():
+    return render_template("home.html")
+
+@app.route('/search_package')
+def search_package():
+    return render_template("search_package.html")
+
 @app.route('/account')
 def account():
     return render_template('account.html')

@@ -1,9 +1,11 @@
 import express from "express"
 import bodyParser from  'body-parser'
-
+import cors from "cors"
 
 const app = express()
 const PORT = 5013
+
+app.use(cors());
 
 app.use(bodyParser.json({
     verify : (req, res, buf, encoding) => {
