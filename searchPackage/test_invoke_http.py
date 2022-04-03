@@ -14,7 +14,7 @@ from invokes import invoke_http
 # invoke cocktail microservice to find review
 cocktail_name = 'Vesper'
 create_results = invoke_http(
-        "http://localhost:5021/review" + "/" + cocktail_name,)
+        "http://localhost:5020/search_package" + "/" + cocktail_name)
 
 print()
 print( create_results )
