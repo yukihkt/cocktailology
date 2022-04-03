@@ -16,10 +16,13 @@ app = Flask(__name__)
 CORS(app)
 
 #book_URL = "http://localhost:5000/book"
-order_URL = environ.get('order_URL') or "http://localhost:5000/order" 
+order_URL = environ.get('order_URL') or "http://localhost:5003/order" 
 shipping_record_URL = environ.get('shipping_record_URL') or "http://localhost:5033/shipping_record" 
 #activity_log_URL = "http://localhost:5002/activity_log"
 #error_URL = "http://localhost:5003/error"
+account_URL = environ.get('account_URL') or "http://localhost:5011//account" 
+
+
 
 paypalrestsdk.configure({
   "mode": "sandbox", # sandbox or live
@@ -111,10 +114,18 @@ def place_order():
 
 
 def processPlaceOrder(order):
-    # 2. Send the order info {cart items}
+
+    
+    account_result = invoke_http(account_URL + "/" + str(order['account_id']))
+    shippingAddress = account_result['data']['shipping_add']
+
+
+
+    # 2. Send the order info 
     # Invoke the order microservice
     print('\n-----Invoking order microservice-----')
-    order_result = invoke_http(order_URL, method='POST', json=order)
+    print("data being passed to order api", order, "\n")
+    order_result = invoke_http(order_URL + "/" + str(order['order_id']), method='POST', json=order)
     print('order_result:', order_result)
   
     # Check the order result; if a failure, send it to the error microservice.
@@ -168,23 +179,22 @@ def processPlaceOrder(order):
     # 5. Send new order to shipping
     # Invoke the shipping record microservice
     print('\n\n-----Invoking shipping_record microservice-----')    
-    
-    shipping_result = invoke_http(
-        shipping_record_URL, method="POST", json=order_result['data'])
+    order['shipping_address'] = shippingAddress
+    print("data being passed into shipping API: ", order, '\n')
+    shipping_result = invoke_http(shipping_record_URL, method="POST", json=order)
     print("shipping_result:", shipping_result, '\n')
 
     # Check the shipping result;
     # if a failure, send it to the error microservice.
-    code = shipping_result["code"]
-    if code not in range(200, 300):
+    if shipping_result['code'] not in range(200, 300):
         # Inform the error microservice
         #print('\n\n-----Invoking error microservice as shipping fails-----')
         print('\n\n-----Publishing the (shipping error) message with routing_key=shipping.error-----')
 
         # invoke_http(error_URL, method="POST", json=shipping_result)
         message = json.dumps(shipping_result)
-        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="shipping.error", 
-            body=message, properties=pika.BasicProperties(delivery_mode = 2))
+        # amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="shipping.error", 
+        #     body=message, properties=pika.BasicProperties(delivery_mode = 2))
 
         print("\nShipping status ({:d}) published to the RabbitMQ Exchange:".format(
             code), shipping_result)
@@ -208,8 +218,6 @@ def processPlaceOrder(order):
         }
     }
 
-if __name__ == '__main__':
-    app.run(port=5001, debug=True)
 
 # Execute this program if it is run as a main script (not by 'import')
 if __name__ == "__main__":

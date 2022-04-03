@@ -33,7 +33,7 @@ def fb_auth():
     assert resp.ok, resp.text
     session["name"] = resp.json().get('name')
     session["account_id"] = resp.json().get('id')
-    return render_template("home.html", data = resp.json())
+    return render_template("account_form.html", data = resp.json())
 
 @app.route("/facebook/logout")
 def fb_logout():
@@ -41,7 +41,6 @@ def fb_logout():
     return redirect(url_for('homepage'))
 
 ############################################################
-
 
 if __name__ == "__main__":
     app.run( port=5000, debug=True, ssl_context='adhoc')

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <!-- bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" 
+    integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" 
+    crossorigin="anonymous">
+    <link href='https://fonts.googleapis.com/css?family=Josefin Sans' rel='stylesheet'>
+
+</head>
+<body style="font-family: Josefin Sans;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <img src="martini-drink.gif" style="width:250px;height:auto;" >
+            
+        </div>
+        <h1 class="row justify-content-center ps-4">Cocktailology</h1>
+        <div class="row justify-content-center">
+            <div id="spinner"
+            style="
+                border-radius: 5px;
+                color: white;
+                height: 40px;
+                text-align: center;
+                width: 250px;">
+            <div
+            class="fb-login-button"
+            data-max-rows="1"
+            data-size="large"
+            data-button-type="continue_with"
+            data-use-continue-as="true"
+            ></div>
+        </div>
+        </div>
+        
+
+    </div>
+    <script>
+        window.fbAsyncInit = function() {
+            FB.init({
+            appId            : '3173224822906874',
+            autoLogAppEvents : true,
+            xfbml            : true,
+            version          : 'v13.0'
+            });
+        };
+    </script>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
+
+    <!-- no idea whats this for LOL https://developers.facebook.com/docs/javascript/quickstart -->
+    <!-- <script>
+        var finished_rendering = function() {
+          console.log("finished rendering plugins");
+          var spinner = document.getElementById("spinner");
+          spinner.removeAttribute("style");
+          spinner.removeChild(spinner.childNodes[0]);
+        }
+        FB.Event.subscribe('xfbml.render', finished_rendering);
+    </script> -->
+              
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
+</body>
+</html>
