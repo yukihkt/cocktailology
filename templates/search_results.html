@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" 
+    integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" 
+    crossorigin="anonymous">
+    <link href='https://fonts.googleapis.com/css?family=Josefin Sans' rel='stylesheet'>
+
+    <title>Cocktail Packages</title>
+    <link rel="stylesheet" href="">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    
+</head>
+<style>
+  body{
+    background-image: url(images/cocktail_background.jpg);
+    background-size: cover;
+    background-attachment: fixed;
+    font-family: 'Josefin Sans';
+    min-height: 100vh
+  }
+  .text-gray {
+    color: #aaa
+}
+
+img {
+    height: 170px;
+    width: 140px
+}
+  .content{
+    background: white;
+    width:50%;
+    padding:40px;
+    margin:100px auto;
+  }
+  .checked {
+  color: orange;
+  } 
+
+  /* Image To Text On Hover */   
+
+</style>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Cocktailology</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNavDropdown">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="search_package.html">Search Drinks</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Cart</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Account
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+              <li><a class="dropdown-item" href="account_pages/account_details.html">Account Details</a></li>
+              <li><a class="dropdown-item" href="account_pages/order_history.html">Order History</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  </div>
+  <!-- <section class="bg-dark" style="--bs-bg-opacity: .5;"> -->
+ 
+  <section>
+    <div id="main-container" class="container py-5">
+      <div class="row text-center text-white mb-5">
+          <div class="col-lg-7 mx-auto">
+              <h1 class="display-4">Cocktail List</h1>
+          </div>
+      </div>
+      <div class="row">
+          <div class="col-lg-8 mx-auto">
+              <!-- List group-->
+              <ul id ="cocktailTable" class="list-group shadow">
+                
+                  </ul>
+                </div>
+              </div>
+           </section>
+         
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
+    <script>
+      // Helper function to display error message
+      function showError(message) {
+          // Hide the table and button in the event of error
+          $('#cocktailTable').hide();
+          $('#addCartBtn').hide();
+   
+          // Display an error under the main container
+          $('#main-container')
+              .append("<label>"+message+"</label>");
+      }
+   
+      // anonymous async function 
+      // - using await requires the function that calls it to be async
+      $(async() => {           
+          // Change serviceURL to your own
+          var serviceURL = "http://127.0.0.1:5020/search_package/Margarita";
+   
+          try {
+              const response =
+               await fetch(
+                 serviceURL, { method: 'GET' }
+              );
+              const result = await response.json();
+               if (response.status === 200) {
+                  // success case
+                  var cocktail = result.data; 
+                  var info = cocktail.cocktail_result.data
+                  console.log(cocktail)
+                  
+                  var reviews = cocktail.review_result.data
+                  var ingredients = info.cocktail_ingredients
+                  
+                  var rows = "";
+                  rows = " <li class='list-group-item'> <div class='media align-items-lg-center flex-column flex-lg-row p-3'> <div class='media-body order-2 order-lg-1'>";
+                  rows += "<h5 class='mt-0 font-weight-bold mb-2'>" + info.cocktail_name + "</h5> ";
+                  rows += "<p class='font-italic text-muted mb-0 small'>" + info.cocktail_description + "</p>";
+                  rows += "<h6 class='text-center font-weight-bold my-2'>"+ info.cocktail_price + " per package</h6></br>";
+                  rows += "<div class='d-flex align-items-center justify-content-center mt-1'><img src='images/cocktail.png' alt='Cocktail Image' width='100' class='ml-lg-5 order-1 order-lg-2'></div></br><h4 class='text-center'> Ingredients </h4>";
+                  for (const ingredient of ingredients ) {
+                    eachRow ="<ul class='list-group small mx-5 text-center'> <li class='list-item'>"+ ingredient.c_ingredients + " x " + ingredient.quantity +"</li></ul>";
+                    rows += "<tr>" + eachRow + "</tr>";
+                  }
+                  rows += "</ul> <ul style ='list-style-type:none' class='list-group'> <h4 class='text-center'></br></br>Reviews</h2>";
+                  for (const review of reviews) {
+                     eachRow ="<li class='list-group-item font-italic text-center text-muted mb-0 small'>" + review.rating + "/5: " + review.reviewer_comment + " - " + review.reviewer_name + "</li>" ;
+            
+                     rows += "<tr>" + eachRow + "</tr>";
+                  }
+                  rows += "</ul> <a href='#' id='addCartBtn' type='button' class='btn btn-light form-control mt-3'>Add to Cart</a></div></li></ul></div></li>";
+                  
+                      
+                      // add all the rows to the table
+                      $('#cocktailTable').append(rows);
+                  
+                  } else if (response.status == 404) {
+                      
+                      showError(result.message);
+                  } else {
+                      // unexpected outcome, throw the error
+                      throw response.status;
+                  }
+              } catch (error) {
+                  // Errors when calling the service; such as network error, 
+                  // service offline, etc
+                  showError
+      ('There is a problem retrieving cocktail data, please try again later.<br />' + error);
+              } // error
+      });
+  </script>
+ 
+</body>
+</html>
