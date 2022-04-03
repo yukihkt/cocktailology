@@ -18,6 +18,9 @@ app.use(bodyParser.json({
 // Import the functions you need from the SDKs you need
 
 import { initializeApp } from "firebase/app";
+import {
+    getFirestore,doc,updateDoc,arrayUnion,setDoc,getDoc, deleteDoc
+} from 'firebase/firestore';
 
 const firebaseConfig = {
     apiKey: "AIzaSyDUFLuQ-Ct2g1Ymii1F6kTfsvoHlIT_zQs",
@@ -33,49 +36,57 @@ const firebaseConfig = {
   // Initialize Firebase
 const firebase_app = initializeApp(firebaseConfig);
 
-import {getDatabase,child,set,ref,update,remove, get}
-from "firebase/database"
-
-const db = getDatabase(firebase_app)
-
+const db = getFirestore(firebase_app)
+/////////////////////////////////////////////////////////////////////////////////////////////////////
 async function writeUserData(account_id,account_name,email,shipping_add){
+    var ref = doc(db,"users",account_id)
     try{
-        await set(ref(db,'users/' + account_id),{
+        await setDoc(ref,{
             account_name: account_name,
             email : email,
-            shipping_add: shipping_add
+            shipping_add: shipping_add,
+            order_history : []
         })
+        console.log("success")
         return true
     }
     catch(e){
-        return "cannot add document"
-    }   
+        return false
+    }
 }
-
-
-app.get('/',(req,res) => {
-    console.log("TEST")
-
-    res.send('Hello from homepage')
-})
-
-app.get('/account', (req,res) => {
-
-})
-
 
 app.post('/account/:account_id', async (req,res) => {
     let account_id=req.params.account_id
-    console.log(req.body)
+    console.log(Object.keys(req.body).length)
+
+    if (Object.keys(req.body).length != 3){
+        return res.status(400).json({
+            "code": 400,
+            "data": `Too few arguments only ${Object.keys(req.body).length}, need 3`
+        })
+    }
+
     let account_name=req.body.account_name
     let email=req.body.email
     let shipping_add = req.body.shipping_add
+
+
+
+    let check = await getUserData(account_id)
+
+    if(check){
+        return res.status(400).json({
+            "code": 400,
+            "data": "User Already Exists"
+        })
+    }
+
     const result = await writeUserData(account_id,account_name,email,shipping_add)
 
     if (result){
         res.status(201).json({
             "code": 201,
-            "data": "Updated with new data"
+            "data": "Created account with data"
         })
     }
     else {
@@ -85,28 +96,133 @@ app.post('/account/:account_id', async (req,res) => {
         })
     }      
 })
+///////////////////////////////////////////////////////////
+async function getUserData(account_id){
+    try{
+        let ref = doc(db,"users",account_id)
+        const docsnap = await getDoc(ref)
+        if (docsnap.exists()){
+            return docsnap.data()
+        }
+    }
+    catch(e){
+        return false
+    }
+}
 
 
 app.get('/account/:account_id', async (req,res) => {
-    let account_id=req.params.account_id
-    const dbref = ref(db) 
-    try{
-        await get(child(dbref,`users/${account_id}`)).then((snapshot)=>{
-            if (snapshot.exists()){
-                return res.send(snapshot.toJSON())
-            }
-            else{
-                return res.send(false)
-            }
+    let account_id=req.params.account_id 
+    let result = await getUserData(account_id)
+
+    if (result){
+        result['account_id'] = account_id
+        res.status(201).json({
+            "code": 201,
+            "data": result
         })
     }
-    catch(e){
-        return res.send("unsuccesful" + e)
+    else{
+        return res.status(400).json({
+            "code": 400,
+            "data": "No User Found"
+        })
     }   
 })
-// app.get('/account', async (req,res) => {
+/////////////////////////////////////////////////////////////////
 
-// })
+async function updateUserData(account_id,email=null,order_info=null,shipping_add=null){
+    try{
+        let ref = doc(db,"users",account_id)
+        if (email != null){
+            await updateDoc(ref,{
+                email: email,
+            })
+        }
+        if (shipping_add != null){
+            await updateDoc(ref,{
+                shipping_add: shipping_add,
+            })
+        }
+        if (order_history != null){
+            await updateDoc(ref,{
+                order_history: arrayUnion({
+                    order_info
+                }),
+            })
+        }        
+        return true
+    }
+    catch(e){
+        return e
+    }
+}
+
+
+app.put('/account/:account_id', async (req,res) => {
+    let account_id = req.params.account_id
+    let update_info = Object.keys(req.body)
+    
+    let email = req.body.email
+    let order_info = req.body.order_history
+    let shipping_add = req.body.shipping_add
+
+    let result = await updateUserData(account_id,email,order_info,shipping_add)
+
+    if (result != true){
+        res.status(201).json({
+            "code": 201,
+            "data": "Updated with updated data"
+        })
+    }
+    else {
+        res.status(400).json({
+            "code": 400,
+            "data": result
+        })
+    }      
+
+})
+////////////////////////////////////////////////////////////////////////////////////
+
+async function deleteUserData(account_id){
+    try{
+        let ref = doc(db,"users",account_id)
+        await deleteDoc(ref)
+        return true
+    }
+    catch(e){
+        return e
+    }
+}
+
+app.delete('/account/:account_id', async (req,res) => {
+    let account_id=req.params.account_id 
+
+    let check = await getUserData(account_id)
+    if(!check){
+        return res.status(400).json({
+            "code": 400,
+            "data": "User Dosent Exist"
+        })
+    }
+    
+    let delete_res = await deleteUserData(account_id)
+    
+    if( delete_res == true){
+        return res.status(200).json({
+            "code": 200,
+            "data": "User Deleted"
+        })
+    }
+    else {
+        return res.status(400).json({
+            "code": 400,
+            "data": delete_res
+        })
+    }
+
+})
 
 
 
