@@ -9,6 +9,7 @@
     integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" 
     crossorigin="anonymous">
     <link href='https://fonts.googleapis.com/css?family=Josefin Sans' rel='stylesheet'>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
     <title>Cocktail Packages</title>
 </head>
@@ -27,6 +28,7 @@
   }
 </style>
 <body>
+  
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
           <a class="navbar-brand" href="#">Cocktailology</a>
@@ -58,21 +60,21 @@
   <!-- <section class="bg-dark" style="--bs-bg-opacity: .5;"> -->
   <section>
       <!-- TODO: replace form action and method -->
-        <div class="card border-dark mb-3 mt-5">
+        <div class="card mb-3 mt-5">
           <form action="">
-          <h3 class="card-header ">My Orders</h3>
+          <h3 class="card-header ">My Orders History</h3>
           <div id="main-container" class="container">
             <table class='table table-striped border-1'>
                 <thead class='table-dark'>
                     <tr>
-                        <th>Package</th>
+                        <th>Order ID</th>
+                        <th>Date </th>
+                        <th>Package Name</th>
                         <th>Quantity</th>
-                        <th>Price</th>
-                        <th>Date</th>
-                        <th>Review</th>
+                    
                     </tr>
                 </thead>
-                <tbody id="booksTable"></tbody>
+                <tbody id="ordersTable"></tbody>
       </table>
         </div>
     
@@ -81,8 +83,67 @@
         </div>
       </form>
   </section>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
-
+  <script>
+    // Helper function to display error message
+    function showError(message) {
+        // Hide the table and button in the event of error
+        $('#ordersTable').hide();
+ 
+        // Display an error under the main container
+        $('#main-container')
+            .append("<label>"+message+"</label>");
+    }
+ 
+    // anonymous async function 
+    // - using await requires the function that calls it to be async
+    $(async() => {           
+        // Change serviceURL to your own
+        var serviceURL = "http://127.0.0.1:5003/order";
+ 
+        try {
+            const response =
+             await fetch(
+               serviceURL, { method: 'GET' }
+            );
+            const result = await response.json();
+             if (response.status === 200) {
+                // success case
+                var orders = result.data.orders; //the array is in orders within data of 
+                                               // the returned result
+                // for loop to setup all table rows with obtained orders data
+                var rows = "";
+                
+                for (const order of orders) {
+                  for (const item of order.order_item){
+                    eachRow ="<td>" + order.order_id + "</td>" +
+                      "<td>" + order.created + "</td>" ;
+                       eachRow+= 
+                        "<td>" + item.packageName + "</td>" +
+                        "<td>" + item.quantity + "</td>";
+                    
+                   rows += "<tr>" + eachRow + "</tr>";
+                  }
+                }
+                    // add all the rows to the table
+                    $('#ordersTable').append(rows);
+                } else if (response.status == 404) {
+                    // No orders
+                    showError(result.message);
+                } else {
+                    // unexpected outcome, throw the error
+                    throw response.status;
+                }
+            } catch (error) {
+                // Errors when calling the service; such as network error, 
+                // service offline, etc
+                showError
+    ('You have no order history available.<br />' + error);
+            } // error
+    });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
 </body>
 </html>
+
+
+
