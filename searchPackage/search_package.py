@@ -55,8 +55,7 @@ def processSearchPackage(cocktail):
     # 5. Get the review for drink
     # Invoke the review microservice
     print('\n\n-----Invoking review microservice-----')
-    review_result = invoke_http(
-        review_URL, json=review_result['cocktail_name'])
+    review_result = invoke_http(review_URL, json=cocktail_result['cocktail_name'])
     print("review_result:", review_result, '\n')
 
     # 7. Return created package result
