@@ -8,7 +8,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('cocktail_URL') or 'mysql+mysqlconnector://root:root@localhost:3306/cocktail'
+app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('cocktail_URL') or 'mysql+mysqlconnector://root@localhost:3306/cocktail'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
 
@@ -23,14 +23,15 @@ class Cocktail(db.Model):
     cocktail_price = db.Column(db.String(8), nullable=False)
     cocktail_description = db.Column(db.String(300), nullable=False)
     cocktail_recipe = db.Column(db.String(300), nullable=False)
- 
+    quantity_available = db.Column(db.Integer, nullable=False)
     def json(self):
         dto = {
             'cocktail_id': self.cocktail_id,
             'cocktail_name': self.cocktail_name, 
             'cocktail_price' : self.cocktail_price,
             'cocktail_description' : self.cocktail_description,
-            'cocktail_recipe' : self.cocktail_recipe
+            'cocktail_recipe' : self.cocktail_recipe,
+            'quantity_available': self.quantity_available
         }
 
         dto['cocktail_ingredients'] = []
@@ -96,6 +97,27 @@ def find_by_cocktail_name(cocktail_name):
         }
     ), 404
 
+
+#for quantity 
+@app.route("/cocktail/<int:cocktail_id>")
+def find_qty_cocktail_id(cocktail_id):
+    cocktail = Cocktail.query.filter_by(cocktail_id=cocktail_id).first()
+    if cocktail:
+        return jsonify(
+            {
+                "code": 200,
+                "data": cocktail.quantity_available
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "data": {
+                "cocktail_id": cocktail_id
+            },
+            "message": "Cocktail not found."
+        }
+    ), 404
 
 
 
