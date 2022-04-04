@@ -36,6 +36,13 @@ def account():
 def loggedin():
     return redirect(url_for("facebook.login"))
 
+@app.route('/order_history')
+def order_history():
+    return render_template("account_pages/order_history.html")
+
+@app.route('/account_details')
+def account_details():
+    return render_template("account_pages/account_details.html")
 
 @app.route('/facebook/authorized')
 def fb_auth():
