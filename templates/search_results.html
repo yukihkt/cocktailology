@@ -17,7 +17,7 @@
 </head>
 <style>
   body{
-    background-image: url(images/cocktail_background.jpg);
+    background-image: url(static/cocktail_background.jpg);
     background-size: cover;
     background-attachment: fixed;
     font-family: 'Josefin Sans';
@@ -47,14 +47,14 @@ img {
 <body>
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">Cocktailology</a>
+      <a class="navbar-brand" href="/">Cocktailology</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNavDropdown">
         <ul class="navbar-nav">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="search_package.html">Search Drinks</a>
+            <a class="nav-link active" aria-current="page" href="/search_package">Search Drinks</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#">Cart</a>
@@ -64,8 +64,8 @@ img {
               Account
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-              <li><a class="dropdown-item" href="account_pages/account_details.html">Account Details</a></li>
-              <li><a class="dropdown-item" href="account_pages/order_history.html">Order History</a></li>
+              <li><a class="dropdown-item" href="/account_details">Account Details</a></li>
+              <li><a class="dropdown-item" href="/order_history">Order History</a></li>
             </ul>
           </li>
         </ul>
@@ -110,7 +110,10 @@ img {
       // - using await requires the function that calls it to be async
       $(async() => {           
           // Change serviceURL to your own
-          var serviceURL = "http://127.0.0.1:5020/search_package/Margarita";
+          const params = new URLSearchParams(window.location.search)
+          var cocktail = params.get('cocktail')
+
+          var serviceURL = `http://127.0.0.1:5020/search_package/${cocktail}`;
    
           try {
               const response =
@@ -122,7 +125,6 @@ img {
                   // success case
                   var cocktail = result.data; 
                   var info = cocktail.cocktail_result.data
-                  console.log(cocktail)
                   
                   var reviews = cocktail.review_result.data
                   var ingredients = info.cocktail_ingredients
@@ -132,7 +134,7 @@ img {
                   rows += "<h5 class='mt-0 font-weight-bold mb-2'>" + info.cocktail_name + "</h5> ";
                   rows += "<p class='font-italic text-muted mb-0 small'>" + info.cocktail_description + "</p>";
                   rows += "<h6 class='text-center font-weight-bold my-2'>"+ info.cocktail_price + " per package</h6></br>";
-                  rows += "<div class='d-flex align-items-center justify-content-center mt-1'><img src='images/cocktail.png' alt='Cocktail Image' width='100' class='ml-lg-5 order-1 order-lg-2'></div></br><h4 class='text-center'> Ingredients </h4>";
+                  rows += "<div class='d-flex align-items-center justify-content-center mt-1'><img src='{{url_for('static', filename='cocktail.png')}}' alt='Cocktail Image' width='100' class='ml-lg-5 order-1 order-lg-2'></div></br><h4 class='text-center'> Ingredients </h4>";
                   for (const ingredient of ingredients ) {
                     eachRow ="<ul class='list-group small mx-5 text-center'> <li class='list-item'>"+ ingredient.c_ingredients + " x " + ingredient.quantity +"</li></ul>";
                     rows += "<tr>" + eachRow + "</tr>";
@@ -164,6 +166,9 @@ img {
               } // error
       });
   </script>
- 
+ <script>
+   var search = document.getElementById('search');
+   console.log(search);
+ </script>
 </body>
 </html>

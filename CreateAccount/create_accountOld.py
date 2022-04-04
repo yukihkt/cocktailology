@@ -17,18 +17,20 @@ CORS(app)
 
 account_URL = "http://localhost:5013/account"
 
-@app.route("/create_account", methods=['POST'])
-def create_account():
+
+
+@app.route("/create_account/<string:accountid>", methods=['POST'])
+def create_account(accountid):
     # Simple check of input format and data of the request are JSON
     if request.is_json:
-        print(request.get_json())
+        
         try:
             new_account_details = request.get_json()
             print("\nReceived an account in JSON:", new_account_details)
 
             # do the actual work
             # 1. Send account info {account details}
-            result = processCreateAccount(new_account_details)
+            result = processCreateAccount(new_account_details,accountid)
             print('\n------------------------')
             print('\nresult: ', result)
             return jsonify(result), result["code"]
@@ -52,19 +54,18 @@ def create_account():
     }), 400
 
 
-def processCreateAccount(new_account_details):
+def processCreateAccount(new_account_details,accountid):
     # 2. Send the order info {cart items}
     # Invoke the account microservice
     print('\n-----Invoking account microservice-----')
-    account_creation_result = invoke_http(account_URL, method='POST', json=new_account_details)
+    accountURL = account_URL+'/'+ accountid
+    account_creation_result = invoke_http(accountURL, method='POST', json=new_account_details)
     print('account_creation_result:', account_creation_result)
   
 
     # Check the order result; if a failure, send it to the error microservice.
     code = account_creation_result["code"]
-    # set email action to 1. email ms will send to customer about successful account creation
-    new_account_details["email_action"] ="1"
-    message = json.dumps(new_account_details)
+    message = json.dumps(account_creation_result)
 
    
     if code not in range(200, 300):
@@ -72,11 +73,10 @@ def processCreateAccount(new_account_details):
         pass
 
     else:
-        print('\n\n-----Publishing the (newly created account info) message with routing_key=create.success-----')   
-        print("Body message: ", message)
+        print('\n\n-----Publishing the (newly created account info) message with routing_key=create.success-----')        
         
         amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="create.success", 
-        body=message)
+            body=message)
     
     print("\nAccount details published to RabbitMQ Exchange.\n")
     # - reply from the invocation is not used;

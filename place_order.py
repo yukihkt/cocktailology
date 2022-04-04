@@ -7,7 +7,6 @@ from os import environ
 import requests
 from invokes import invoke_http
 
-import paypalrestsdk
 
 import pika
 import json
@@ -23,60 +22,6 @@ shipping_record_URL = environ.get('shipping_record_URL') or "http://localhost:50
 account_URL = environ.get('account_URL') or "http://localhost:5011//account" 
 
 
-
-paypalrestsdk.configure({
-  "mode": "sandbox", # sandbox or live
-  "client_id": "ARInOSQswDDw2JXnDpyAdDTs9Dgdf9tNDBUq-MSC9nRRICQrPXh7p8XiGYsqJlDin-j5oe6ZKN8P-Yrt",
-  "client_secret": "EOOuzw2fQH3aKlrRRNts_mR3nNu_wjuuXShoKKZ_lP3R0KBMndy203bPiBssayygnLqZMH4mV4VR11Cg" })
-
-@app.route('/')
-def index():
-    return render_template('payment.html') 
-
-@app.route('/payment', methods=['POST'])
-def payment():
-
-    payment = paypalrestsdk.Payment({
-        "intent": "sale",
-        "payer": {
-            "payment_method": "paypal"},
-        "redirect_urls": {
-            "return_url": "http://localhost:3000/payment/execute",
-            "cancel_url": "http://localhost:3000/"},
-        "transactions": [{
-            "item_list": {
-                "items": [{
-                    "name": "testitem",
-                    "sku": "12345",
-                    "price": "500.00",
-                    "currency": "USD",
-                    "quantity": 1}]},
-            "amount": {
-                "total": "500.00",
-                "currency": "USD"},
-            "description": "This is the payment transaction description."}]})
-
-    if payment.create():
-        print('Payment success!')
-    else:
-        print(payment.error)
-
-    return jsonify({'paymentID' : payment.id})
-
-@app.route('/execute', methods=['POST'])
-def execute():
-    success = False
-
-    payment = paypalrestsdk.Payment.find(request.form['paymentID'])
-
-    if payment.execute({'payer_id' : request.form['payerID']}):
-        print('Execute success!')
-        success = True
-        
-    else:
-        print(payment.error)
-
-    return jsonify({'success' : success})
 
 
 @app.route("/place_order", methods=['POST'])

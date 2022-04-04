@@ -5,7 +5,7 @@ import os
 import requests
 
 app = Flask(__name__)
-app.config["SERVER_NAME"] = "localhost:5000"
+app.config["SERVER_NAME"] = "localhost:9000"
 app.secret_key = '\xfd{H\xe5<\x95\xf9\xe3\x96.5\xd1\x01O<!/xd5\xa2\xa0\x9fR"\xa1\xa8'
 
 ###############################################################
@@ -24,6 +24,10 @@ def homepage():
 def search_package():
     return render_template("search_package.html")
 
+@app.route('/search_results')
+def search_results():
+    return render_template("search_results.html")
+
 @app.route('/account')
 def account():
     return render_template('account.html')
@@ -32,6 +36,13 @@ def account():
 def loggedin():
     return redirect(url_for("facebook.login"))
 
+@app.route('/order_history')
+def order_history():
+    return render_template("account_pages/order_history.html")
+
+@app.route('/account_details')
+def account_details():
+    return render_template("account_pages/account_details.html")
 
 @app.route('/facebook/authorized')
 def fb_auth():
@@ -51,4 +62,4 @@ def fb_logout():
 ############################################################
 
 if __name__ == "__main__":
-    app.run( port=5000, debug=True, ssl_context='adhoc')
+    app.run( port=9000, debug=True, ssl_context='adhoc')

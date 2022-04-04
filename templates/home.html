@@ -16,7 +16,7 @@
 <body style="font-family: Josefin Sans;">
     <div class="container">
         <div class="row justify-content-center">
-            <img src="images/martini-drink.gif" style="width:250px;height:auto;" >
+            <img src="{{url_for('static', filename='martini-drink.gif')}}" style="width:250px;height:auto;" >
 
             
         </div>
@@ -71,11 +71,6 @@
         }
         FB.Event.subscribe('xfbml.render', finished_rendering);
     </script> -->
-
-    
-
-
-
 
 </body>
 </html>
