@@ -40,7 +40,7 @@
                 </div>
                 <div>
                 <!-- <button type="button" class="btn btn-dark form-control mt-3">Submit</button> -->
-                <a href="#" type="button" class="btn btn-dark form-control mt-3">Submit</a>
+                <a href="#" type="button" class="btn btn-dark form-control mt-3" @click="account_creation()">Submit</a>
                 </div>
             </form>
         </div>
@@ -64,17 +64,38 @@
             }
         },
 
-        created: function (){
-            console.log(this.id)
-            axios.get(`http://localhost:5013/account/${this.id}`)
-            .then(response => {
-                console.log(response)                
-            })
-            .catch(error => {
-                console.log(error.response.data)
-                //will move to .then, it is here for testing only right now
-                //window.location.href = 'https://localhost:5000/search_package'
-            })
+        // created: function (){
+        //     console.log(this.id)
+        //     axios.get(`http://localhost:5013/account/${this.id}`)
+        //     .then(response => {
+        //         console.log(response)                
+        //     })
+        //     .catch(error => {
+        //         console.log(error.response.data)
+        //         //will move to .then, it is here for testing only right now
+        //         //window.location.href = 'https://localhost:5000/search_package'
+        //     })
+        // }
+
+        methods:{
+            account_creation() {
+                console.log('hi')
+                let payload = {
+                    "email": this.email,
+                    "shipping_add": [this.address1,this.address2,this.address3].join(','),
+                    "account_name": this.name ,
+                    "customer_id": this.id
+                }
+                console.log('payload')
+
+                axios.post(`http://localhost:5010/create_account`, payload)
+                    .then(response => {
+                        console.log(response)                
+                    })
+                    .catch(error => {
+                        console.log(error.response.data)
+                    })
+            }
         }
             
 
