@@ -48,7 +48,7 @@ async function writeUserData(account_id,account_name,email,shipping_add){
             order_history : [],
             wishlist : []
         })
-        console.log("success")
+
         return true
     }
     catch(e){
@@ -56,25 +56,24 @@ async function writeUserData(account_id,account_name,email,shipping_add){
     }
 }
 
-app.post('/account/:account_id', async (req,res) => {
-    let account_id=req.params.account_id
+app.post('/account', async (req,res) => {
+    //let account_id=req.params.account_id
     console.log(Object.keys(req.body).length)
 
-    if (Object.keys(req.body).length != 3){
+    if (Object.keys(req.body).length > 4){
         return res.status(400).json({
             "code": 400,
-            "data": `Too few arguments only ${Object.keys(req.body).length}, need 3`
+            "data": `Only ${Object.keys(req.body)} arguments are there, need email,shipping_add,account_name,customer_id`
         })
     }
 
+    let account_id = String(req.body.customer_id)
     let account_name=req.body.account_name
     let email=req.body.email
     let shipping_add = req.body.shipping_add
 
 
-
     let check = await getUserData(account_id)
-
     if(check){
         return res.status(400).json({
             "code": 400,
@@ -229,7 +228,12 @@ app.delete('/account/:account_id', async (req,res) => {
 
 })
 
-
+app.use((req, res, next) => {
+    res.status(500).json({
+    status: 500,
+    error: "No Such Route"
+    })
+})
 
 
 app.listen(PORT, () => console.log(`Listening On http://localhost:${5013}`))
