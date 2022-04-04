@@ -33,11 +33,11 @@ def payment():
                     "name": "testitem",
                     "sku": "12345",
                     "price": "500.00",
-                    "currency": "USD",
+                    "currency": "SGD",
                     "quantity": 1}]},
             "amount": {
                 "total": "500.00",
-                "currency": "USD"},
+                "currency": "SGD"},
             "description": "This is the payment transaction description."}]})
 
     if payment.create():
