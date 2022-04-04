@@ -4,6 +4,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 
 import os, sys
+from os import environ
 
 import requests
 from invokes import invoke_http
@@ -15,7 +16,7 @@ import json
 app = Flask(__name__)
 CORS(app)
 
-account_URL = "http://localhost:5013/account"
+account_URL = environ.get('account_URL') or "http://localhost:5013/account"
 
 @app.route("/create_account", methods=['POST'])
 def create_account():
