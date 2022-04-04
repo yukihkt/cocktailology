@@ -49,8 +49,6 @@ class Cocktail_Ingredients(db.Model):
     c_ingredients = db.Column(db.String(50), nullable=False)
     quantity = db.Column(db.String(50), nullable=False)
 
-    # order_id = db.Column(db.String(36), db.ForeignKey('order.order_id'), nullable=False)
-    # order = db.relationship('Order', backref='order_item')
     cocktail = db.relationship(
         'Cocktail', primaryjoin='Cocktail_Ingredients.cocktail_id == Cocktail.cocktail_id', backref='cocktail_ingredients')
 
