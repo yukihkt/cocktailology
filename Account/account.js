@@ -48,7 +48,8 @@ async function writeUserData(account_id,account_name,email,shipping_add){
             email : email,
             shipping_add: shipping_add,
             order_history : [],
-            wishlist : []
+            wishlist : [],
+            cart : []
         })
 
         return true
@@ -133,7 +134,7 @@ app.get('/account/:account_id', async (req,res) => {
 })
 /////////////////////////////////////////////////////////////////
 
-async function updateUserData(account_id,email=null,order_info=null,shipping_add=null,wishlist=null){
+async function updateUserData(account_id,email=null,order_info=null,shipping_add=null,wishlist=null,cart=null){
     try{
         let ref = doc(db,"users",account_id)
         if (email != null){
@@ -155,7 +156,12 @@ async function updateUserData(account_id,email=null,order_info=null,shipping_add
             await updateDoc(ref,{
                 wishlist: arrayUnion(wishlist),
             })
-        }        
+        }
+        if (cart != null){
+            await updateDoc(ref,{
+                cart: arrayUnion(cart),
+            })
+        }         
         return true
     }
     catch(e){
@@ -172,8 +178,9 @@ app.put('/account/:account_id', async (req,res) => {
     let order_info = req.body.order_history
     let shipping_add = req.body.shipping_add
     let wishlist = req.body.wishlist
+    let cart = req.body.cart
 
-    let result = await updateUserData(account_id,email,order_info,shipping_add,wishlist)
+    let result = await updateUserData(account_id,email,order_info,shipping_add,wishlist,cart)
 
     if (result == true){
         res.status(201).json({
