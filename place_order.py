@@ -22,7 +22,19 @@ shipping_record_URL = environ.get('shipping_record_URL') or "http://localhost:50
 #error_URL = "http://localhost:5003/error"
 account_URL = environ.get('account_URL') or "http://localhost:5011//account" 
 
+# invoke paypal, receives status code and message
 
+# gets account shipping details, send as JSON string to order
+
+# send order information (), return status of new record
+
+# request cocktail to show qty of packages needed, retrun stauts and message
+
+    # if qty not enough (error code ??):
+        # send amqp to email, action_email = 2
+    # else:
+        # invoke Order ms to confirm payment
+        # 
 @app.route("/place_order", methods=['POST'])
 def place_order():
     # Simple check of input format and data of the request are JSON
@@ -127,4 +139,4 @@ def processPlaceOrder(order):
 
 if __name__ == "__main__":
     print("This is flask " + os.path.basename(__file__) + " for placing an order...")
-    app.run(host="0.0.0.0", port=5100, debug=True)
+    app.run(host="0.0.0.0", port=5030, debug=True)
