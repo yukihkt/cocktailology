@@ -1,11 +1,9 @@
 import express from "express"
 import bodyParser from  'body-parser'
-import cors from "cors"
+
 
 const app = express()
 const PORT = 5013
-
-app.use(cors());
 
 app.use(bodyParser.json({
     verify : (req, res, buf, encoding) => {
@@ -47,13 +45,14 @@ async function writeUserData(account_id,account_name,email,shipping_add){
             account_name: account_name,
             email : email,
             shipping_add: shipping_add,
-            order_history : []
+            order_history : [],
+            wishlist : []
         })
         console.log("success")
         return true
     }
     catch(e){
-        return false
+        return e
     }
 }
 
@@ -85,7 +84,7 @@ app.post('/account/:account_id', async (req,res) => {
 
     const result = await writeUserData(account_id,account_name,email,shipping_add)
 
-    if (result){
+    if (result == true){
         res.status(201).json({
             "code": 201,
             "data": "Created account with data"
@@ -133,7 +132,7 @@ app.get('/account/:account_id', async (req,res) => {
 })
 /////////////////////////////////////////////////////////////////
 
-async function updateUserData(account_id,email=null,order_info=null,shipping_add=null){
+async function updateUserData(account_id,email=null,order_info=null,shipping_add=null,wishlist=null){
     try{
         let ref = doc(db,"users",account_id)
         if (email != null){
@@ -146,11 +145,14 @@ async function updateUserData(account_id,email=null,order_info=null,shipping_add
                 shipping_add: shipping_add,
             })
         }
-        if (order_history != null){
+        if (order_info != null){
             await updateDoc(ref,{
-                order_history: arrayUnion({
-                    order_info
-                }),
+                order_history: arrayUnion(order_info),
+            })
+        }
+        if (wishlist != null){
+            await updateDoc(ref,{
+                wishlist: arrayUnion(wishlist),
             })
         }        
         return true
@@ -163,15 +165,16 @@ async function updateUserData(account_id,email=null,order_info=null,shipping_add
 
 app.put('/account/:account_id', async (req,res) => {
     let account_id = req.params.account_id
-    let update_info = Object.keys(req.body)
+    
     
     let email = req.body.email
     let order_info = req.body.order_history
     let shipping_add = req.body.shipping_add
+    let wishlist = req.body.wishlist
 
-    let result = await updateUserData(account_id,email,order_info,shipping_add)
+    let result = await updateUserData(account_id,email,order_info,shipping_add,wishlist)
 
-    if (result != true){
+    if (result == true){
         res.status(201).json({
             "code": 201,
             "data": "Updated with updated data"
