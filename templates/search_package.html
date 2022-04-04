@@ -8,13 +8,17 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" 
     integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" 
     crossorigin="anonymous">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
     <link href='https://fonts.googleapis.com/css?family=Josefin Sans' rel='stylesheet'>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
 
     <title>Cocktail Packages</title>
 </head>
 <style>
+
 
 .main-search-input {
     background: #fff;
@@ -63,7 +67,7 @@
 }
 
 .main-search-button {
-    background: grey;
+    background: #4DB7FE
 }
 
 .main-search-button {
@@ -117,6 +121,7 @@
         border-radius: 6px
     }
 }
+
   body{
     background-image:  url('/static/cocktail_background.jpg');
     background-size: cover;
@@ -132,14 +137,6 @@
     margin:100px auto;
   }
 
-  .button{
-    background-color: transparent;
-    background-repeat: no-repeat;
-    border: none;
-    cursor: pointer;
-    overflow: hidden;
-    outline: none;
-  }
 
     
   
@@ -173,33 +170,25 @@
     </div>
   </nav>
   </div>
-  <!-- <section class="bg-dark" style="--bs-bg-opacity: .5;"> -->
+  
   <section>
-    <div class="main-search-input-wrap">
+    <!-- <div class="main-search-input-wrap">
       <div class="main-search-input fl-wrap">
           <div class="main-search-input-item"> 
-          <input type="text" id ="myInput" onkeyup="myFunction()" placeholder="Search Cocktail here..." > 
+            <input type="text" value="" id ="autocomplete"  placeholder="Search Cocktail here..."> 
+            <button class="main-search-button">Search</button>
+ 
           </div>
-          </div>
-          <div class="card mb-3 mt-5">
-            <div id="main-container" class="container">
-              <table class='table table-striped border-1'>
-                  <thead></thead>
-                 <form action ="" method="post">
-                   
-                  <tbody id="cocktailTable"></tbody>
-                  </form>
-        </table>
-          </div>
-      
-              
-            </div>
-          </div>
-        </form>
-      </div>
+        </div>
+      </div> -->
+      <div class="main-search-input-wrap">
+        <div class="main-search-input fl-wrap">
+            <div class="main-search-input-item"> <input id="autocomplete" type="text" value="" placeholder="Search Cocktails..."> </div> <button id="button" type ="submit" onclick ="redirect_func(name)" class="main-search-button" >Search</button>
+        </div>
+    </div>
   </section>
 
-    <script>
+    <!-- <script>
       // Helper function to display error message
       function showError(message) {
           // Hide the table and button in the event of error
@@ -224,7 +213,7 @@
               const result = await response.json();
                if (response.status === 200) {
                   // success case
-                  var cocktails = result.data.cocktail;
+                  const cocktails = result.data.cocktail;
                 
                   var rows = "";
                  
@@ -256,34 +245,40 @@
       ('No cocktails available.<br />' + error);
               } // error
       });
-  </script>
+  </script> -->
 
   <script>
     function redirect_func(name){
+      
       window.location.href = "{{url_for('search_results',_external=True)}}" + `?cocktail=${name}`
-    }
-
-
-    function myFunction() {
-      // Declare variables
-      var input, filter, ul, li, a, i, txtValue;
-      input = document.getElementById('myInput');
-      filter = input.value.toUpperCase();
-      ul = document.getElementById("cocktailTable");
-      li = ul.getElementsByTagName('td');
     
-      // Loop through all list items, and hide those who don't match the search query
-      for (i = 0; i < li.length; i++) {
-        a = li[i].getElementsByTagName("button")[0];
-        txtValue = a.textContent || a.innerText;
-        if (txtValue.toUpperCase().indexOf(filter) > -1) {
-          li[i].style.display = "";
-        } else {
-          li[i].style.display = "none";
-        }
-      }
     }
     </script>
+
+
+    <script>
+      var tags = ["Margarita","Singapore Sling","Old Fashioned","Cosmopolitan","Negroni","Moscow Mule", "Martini", "Mojito", "Whiskey Sour","French 75","Manhattan","Spritz","Gimlet","Sazerac",
+      "Pimm's Cup","Vesper","Mimosa","Tom Collins","Paloma","Sidecar","Mint Julep", "Daiquiri","Dark & Stormy","Martinez"];
+      $( "#autocomplete" ).autocomplete({
+        source: function( request, response ) {
+                var matcher = new RegExp( "^" + $.ui.autocomplete.escapeRegex( request.term ), "i" );
+                response( $.grep( tags, function( item ){
+                    // return `<button onclick="redirect_func('${ matcher.test( item ) }')" id='package_name' name ='but1' class='button' type='submit' value= ${ matcher.test( item ) } > ${ matcher.test( item ) }</button>`;
+
+                    return  matcher.test( item );
+                }) );
+            }
+      });
+      
+      $(document).ready(function () {
+          $('#autocomplete').on('autocompletechange change', function () {
+              const name = this.value;
+              $('#button').value(this.value + `\>` + this.value);
+          }).change();
+      });
+     
+      </script>
+       
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
    
 
