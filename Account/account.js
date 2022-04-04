@@ -21,7 +21,7 @@ app.use(bodyParser.json({
 
 import { initializeApp } from "firebase/app";
 import {
-    getFirestore,doc,updateDoc,arrayUnion,setDoc,getDoc, deleteDoc
+    getFirestore,doc,updateDoc,arrayUnion,setDoc,getDoc, deleteDoc, deleteField
 } from 'firebase/firestore';
 
 const firebaseConfig = {
@@ -63,7 +63,7 @@ app.post('/account', async (req,res) => {
     //let account_id=req.params.account_id
     console.log(Object.keys(req.body).length)
 
-    if (Object.keys(req.body).length > 4){
+    if (Object.keys(req.body).length < 4){
         return res.status(400).json({
             "code": 400,
             "data": `Only ${Object.keys(req.body)} arguments are there, need email,shipping_add,account_name,customer_id`
@@ -209,6 +209,7 @@ async function deleteUserData(account_id){
     }
 }
 
+
 app.delete('/account/:account_id', async (req,res) => {
     let account_id=req.params.account_id 
 
@@ -236,7 +237,55 @@ app.delete('/account/:account_id', async (req,res) => {
     }
 
 })
+/////////////////////////////////////////////////////////////////////////////////////////
 
+async function deleteCartData(account_id){
+    try{
+        let ref = doc(db,"users",account_id)
+        await updateDoc(ref, {
+            cart: deleteField()
+        });
+        await updateDoc(ref, {
+            cart: []
+        })
+        return true
+    }
+    catch(e){
+        return e
+    }
+}
+
+
+
+app.delete('/account/:account_id/cart', async(req,res) =>{
+    let account_id=req.params.account_id 
+
+    let check = await getUserData(account_id)
+    if(!check){
+        return res.status(400).json({
+            "code": 400,
+            "data": "User Dosent Exist"
+        })
+    }
+    
+    let delete_res = await deleteCartData(account_id) 
+    
+    if( delete_res == true){
+        return res.status(200).json({
+            "code": 200,
+            "data": "Field Deleted"
+        })
+    }
+    else {
+        return res.status(400).json({
+            "code": 400,
+            "data": delete_res
+        })
+    }
+})
+
+
+////////////////////////////////////////////////////////////////////////////////////////////
 app.use((req, res, next) => {
     res.status(500).json({
     status: 500,
