@@ -17,8 +17,6 @@ CORS(app)
 
 account_URL = "http://localhost:5013/account"
 
-
-
 @app.route("/create_account", methods=['POST'])
 def create_account():
     # Simple check of input format and data of the request are JSON
@@ -64,7 +62,9 @@ def processCreateAccount(new_account_details):
 
     # Check the order result; if a failure, send it to the error microservice.
     code = account_creation_result["code"]
-    message = json.dumps(account_creation_result)
+    # set email action to 1. email ms will send to customer about successful account creation
+    new_account_details["email_action"] ="1"
+    message = json.dumps(new_account_details)
 
    
     if code not in range(200, 300):
@@ -72,10 +72,11 @@ def processCreateAccount(new_account_details):
         pass
 
     else:
-        print('\n\n-----Publishing the (newly created account info) message with routing_key=create.success-----')        
+        print('\n\n-----Publishing the (newly created account info) message with routing_key=create.success-----')   
+        print("Body message: ", message)
         
         amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="create.success", 
-            body=message)
+        body=message)
     
     print("\nAccount details published to RabbitMQ Exchange.\n")
     # - reply from the invocation is not used;

@@ -11,6 +11,7 @@
 import smtplib, ssl
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+
 import json
 import os
 # from flask import Flask
@@ -21,7 +22,7 @@ import os
 
 import amqp_setup
 
-monitorBindingKey='create.success'
+monitorBindingKey='#.success'
 
 def receiveAcountDetails():
     amqp_setup.check_setup()
@@ -40,44 +41,49 @@ def callback(channel, method, properties, body): # required signature for the ca
 
 def processAccountDetails(account):
     print("Sending an email to the customer:")
-    print(account)
+    print("Account variable", account)
+    # print("Account data", account["data"])
     port = 465  # For SSL
-    sender_email = "cocktailogy.esd@gmail.com"
-    sender_p = input("Type your password and press enter: ")
-    # sender_p = "cockt4ilogy!"
+    if account["email_action"]=="1":
+      sender_email = "cocktailogy.esd@gmail.com"
+      # sender_p = input("Type your password and press enter: ")
+      sender_p = "cockt4ilogy!"
+      
+      receiver_email = account["email"]
 
-    # TODO: replace with customers email
-    receiver_email = "andrea.yap.2020@smu.edu.sg"
+      message = MIMEMultipart("alternative")
+      message["Subject"] = "Welcome to the Cocktailogy family!"
+      message["From"] = sender_email
+      message["To"] = receiver_email
 
-    message = MIMEMultipart("alternative")
-    message["Subject"] = "Welcome to the Cocktailogy family!"
-    message["From"] = sender_email
-    message["To"] = receiver_email
+      # TODO: replace # with our deployed app login page
+      html = f"""\
+      <html>
+        <body>
+        <b>Hi {account['account_name']}!</b><br>
+        We are so happy to see you join our family! &#128513;<br>
+        Feel free to scroll through our page to check out our drinks <a href="https://localhost:9000">here</a>. <br><br>
+          </p>
+          Warmest Regards,<br>
+          Cocktailogy Development Team
+        </body>
+      </html>
+      """
+      # Turn these into plain/html MIMEText objects
+      part2 = MIMEText(html, "html")
+      # Add HTML/plain-text parts to MIMEMultipart message
+      message.attach(part2)
+      # Create a secure SSL context
+      context = ssl.create_default_context()
 
-    # TODO: replace # with our deployed app login page
-    html = """\
-    <html>
-      <body>
-      <b>Hi there!</b><br>
-      We are so happy to see you join our family! &#128513;<br>
-      Feel free to scroll through our page to check out our drinks <a href="#">here</a>. <br><br>
-        </p>
-        Warmest Regards,<br>
-        Cocktailogy Development Team
-      </body>
-    </html>
-    """
-    # Turn these into plain/html MIMEText objects
-    part2 = MIMEText(html, "html")
-    # Add HTML/plain-text parts to MIMEMultipart message
-    message.attach(part2)
-    # Create a secure SSL context
-    context = ssl.create_default_context()
+      # !! do not store email password in code. Use Input to let user type in their password when running the script
+      with smtplib.SMTP_SSL("smtp.gmail.com", port, context=context) as server:
+          server.login(sender_email, sender_p)
+          server.sendmail(sender_email, receiver_email, message.as_string())
 
-    # !! do not store email password in code. Use Input to let user type in their password when running the script
-    with smtplib.SMTP_SSL("smtp.gmail.com", port, context=context) as server:
-        server.login(sender_email, sender_p)
-        server.sendmail(sender_email, receiver_email, message.as_string())
+      print("Email has been sent to the customer that their account has been successfully created.")
+    else:
+      print(account, "action not 1")
 
 
 if __name__ == "__main__":
