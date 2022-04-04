@@ -8,16 +8,17 @@
 
 # this microservice uses SMTP_SSL() to send emails.
 # Documentation: https://realpython.com/python-send-email/
+
 import smtplib, ssl
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import json
 import os
-# from flask import Flask
-# from flask_cors import CORS
+from flask import Flask
+from flask_cors import CORS
 
-# app = Flask(__name__)
-# CORS(app)
+app = Flask(__name__)
+CORS(app)
 
 import amqp_setup
 
@@ -81,6 +82,7 @@ def processAccountDetails(account):
 
 
 if __name__ == "__main__":
-    print("\nThis is " + os.path.basename(__file__), end='')
-    print(": monitoring routing key '{}' in exchange '{}' ...".format(monitorBindingKey, amqp_setup.exchangename))
-    receiveAcountDetails()
+  app.run(host='0.0.0.0', port=5000, debug=True)
+  print("\nThis is " + os.path.basename(__file__), end='')
+  print(": monitoring routing key '{}' in exchange '{}' ...".format(monitorBindingKey, amqp_setup.exchangename))
+  receiveAcountDetails()
