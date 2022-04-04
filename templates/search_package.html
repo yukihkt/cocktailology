@@ -230,7 +230,8 @@
                  
                   for (const cocktail of cocktails) {
                     
-                      eachRow ="<td><button id='package_name' name ='but1' class='button' type='submit' value='"+cocktail.cocktail_name+"'>" + cocktail.cocktail_name + "</button>";
+                      eachRow =`<td>
+                        <button onclick="redirect_func('${cocktail.cocktail_name}')" id='package_name' name ='but1' class='button' type='submit' value=${cocktail.cocktail_name}>${cocktail.cocktail_name}</button>`;
                      
 
                 
@@ -258,6 +259,11 @@
   </script>
 
   <script>
+    function redirect_func(name){
+      window.location.href = "{{url_for('search_results',_external=True)}}" + `?cocktail=${name}`
+    }
+
+
     function myFunction() {
       // Declare variables
       var input, filter, ul, li, a, i, txtValue;
