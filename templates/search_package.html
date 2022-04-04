@@ -132,6 +132,15 @@
     margin:100px auto;
   }
 
+  .button{
+    background-color: transparent;
+    background-repeat: no-repeat;
+    border: none;
+    cursor: pointer;
+    overflow: hidden;
+    outline: none;
+  }
+
     
   
 </style>
@@ -176,8 +185,10 @@
             <div id="main-container" class="container">
               <table class='table table-striped border-1'>
                   <thead></thead>
-                 
+                 <form action ="" method="post">
+                   
                   <tbody id="cocktailTable"></tbody>
+                  </form>
         </table>
           </div>
       
@@ -214,19 +225,20 @@
                if (response.status === 200) {
                   // success case
                   var cocktails = result.data.cocktail;
-
-                  console.log(cocktails)
                 
                   var rows = "";
-                  
+                 
                   for (const cocktail of cocktails) {
                     
-                      eachRow ="<td><a href='#''>" + cocktail.cocktail_name + "</td>";
+                      eachRow ="<td><button id='package_name' name ='but1' class='button' type='submit' value='"+cocktail.cocktail_name+"'>" + cocktail.cocktail_name + "</button>";
+                     
+
                 
                     
                      rows += "<tr>" + eachRow + "</tr>";
                     
                   }
+                 
                       // add all the rows to the table
                       $('#cocktailTable').append(rows);
                   } else if (response.status == 404) {
@@ -256,7 +268,7 @@
     
       // Loop through all list items, and hide those who don't match the search query
       for (i = 0; i < li.length; i++) {
-        a = li[i].getElementsByTagName("a")[0];
+        a = li[i].getElementsByTagName("button")[0];
         txtValue = a.textContent || a.innerText;
         if (txtValue.toUpperCase().indexOf(filter) > -1) {
           li[i].style.display = "";
@@ -270,4 +282,5 @@
    
 
 </body>
+
 </html>

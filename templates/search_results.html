@@ -122,7 +122,6 @@ img {
                   // success case
                   var cocktail = result.data; 
                   var info = cocktail.cocktail_result.data
-                  console.log(cocktail)
                   
                   var reviews = cocktail.review_result.data
                   var ingredients = info.cocktail_ingredients
@@ -164,6 +163,9 @@ img {
               } // error
       });
   </script>
- 
+ <script>
+   var search = document.getElementById('search');
+   console.log(search);
+ </script>
 </body>
 </html>
