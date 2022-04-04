@@ -19,12 +19,12 @@ exchangetype="direct"
 channel.exchange_declare(exchange=exchangename, exchange_type=exchangetype, durable=True)
 
 
-############   Activity_Log queue    #############
-#declare Activity_Log queue
+############   Email queue    #############
+#declare email queue
 queue_name = 'email'
 channel.queue_declare(queue=queue_name, durable=True)
 
-#bind Activity_Log queue
+#bind email queue
 channel.queue_bind(exchange=exchangename, queue=queue_name, routing_key='create.success') 
 
 """

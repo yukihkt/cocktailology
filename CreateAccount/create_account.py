@@ -6,7 +6,7 @@ from flask_cors import CORS
 import os, sys
 
 import requests
-from Account.invokes import invoke_http
+from invokes import invoke_http
 
 import CreateAccount.amqp_setup as amqp_setup
 import pika
@@ -15,12 +15,12 @@ import json
 app = Flask(__name__)
 CORS(app)
 
-account_URL = "http://localhost:5000/account"
+account_URL = "http://localhost:5013/account"
 
 
 
 @app.route("/create_account", methods=['POST'])
-def place_order():
+def create_account():
     # Simple check of input format and data of the request are JSON
     if request.is_json:
         try:
@@ -55,7 +55,7 @@ def place_order():
 
 def processCreateAccount(new_account_details):
     # 2. Send the order info {cart items}
-    # Invoke the order microservice
+    # Invoke the account microservice
     print('\n-----Invoking account microservice-----')
     account_creation_result = invoke_http(account_URL, method='POST', json=new_account_details)
     print('account_creation_result:', account_creation_result)
@@ -91,4 +91,4 @@ def processCreateAccount(new_account_details):
 # Execute this program if it is run as a main script (not by 'import')
 if __name__ == "__main__":
     print("This is flask " + os.path.basename(__file__) + " for creating an account ...")
-    app.run(host="0.0.0.0", port=5100, debug=True)
+    app.run(host="0.0.0.0", port=5010, debug=True)
