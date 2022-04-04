@@ -22,7 +22,7 @@ account_URL = "http://localhost:5000/account"
 @app.route("/create_account", methods=['POST'])
 def place_order():
     # Simple check of input format and data of the request are JSON
-    if request.is_json:
+    if request.is_json: 
         try:
             new_account_details = request.get_json()
             print("\nReceived an account in JSON:", new_account_details)
