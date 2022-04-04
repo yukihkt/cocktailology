@@ -1,339 +1,469 @@
-
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Make Payment</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-    <style> 
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            list-style: none;
-            font-family: 'Montserrat', sans-serif
-        }
-        
-        body {
-            background-color: white;
-            line-height: 1rem;
-            font-size: 14px;
-            padding: 10px
-        }
-        
-        .container {
-            border-top-left-radius: 25px;
-            border-top-right-radius: 25px;
-            border-bottom-left-radius: 25px;
-            border-bottom-right-radius: 25px;
-            background-color: #eee
-        }
-        
-        .navbar-brand {
-            text-transform: uppercase;
-            font-size: 14px;
-            font-weight: 800
-        }
-        
-        nav {
-            border-top-left-radius: 25px;
-            border-top-right-radius: 25px;
-            background-color: white
-        }
-        
-        .order .card {
-            position: relative;
-            background: #fff;
-            box-shadow: 0 0 15px rgba(0, 0, 0, .1)
-        }
-     
-        small {
-            font-size: 12px
-        }
-        
-        .cart {
-            line-height: 1
-        }
-        
-        
-        .pic {
-            width: 70px;
-            height: 90px;
-            border-radius: 5px
-        }
-        
-        td {
-            vertical-align: middle
-        }
-        
-        
-        .b-bottom {
-            border-bottom: 2px dotted black;
-            padding-bottom: 20px
-        }
-        
-        p {
-            margin: 0px
-        }
-        
-        table input {
-            width: 40px;
-            border: 1px solid #eee
-        }
-        
-        input:focus {
-            border: 1px solid #eee;
-            outline: none
-        }
-        
-        
-        .payment-summary .unregistered {
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: #eee;
-            text-transform: uppercase;
-            font-size: 14px
-        }
-        
-        .payment-summary input {
-            width: 100%;
-            margin-right: 20px
-        }
+	<head>
+		<meta charset="UTF-8" />
+		<title>Make Payment</title>
+		<link
+			href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+			rel="stylesheet"
+			integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+			crossorigin="anonymous"
+		/>
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+				list-style: none;
+				font-family: "Montserrat", sans-serif;
+			}
 
-         
-        .del {
-            width: 35px;
-            height: 35px;
-            object-fit: cover
-        }
-        
-        .delivery .card {
-            padding: 10px 5px
-        }
-        
-        .option {
-            position: relative;
-            top: 50%;
-            display: block;
-            cursor: pointer;
-            color: #888
-        }
-        
-        .option input {
-            display: none
-        }
-        
-        .checkmark {
-            position: absolute;
-            top: 40%;
-            left: -25px;
-            height: 20px;
-            width: 20px;
-            background-color: #fff;
-            border: 1px solid #ccc;
-            border-radius: 50%
-        }
-        
-        .option input:checked~.checkmark:after {
-            display: block
-        }
-        
-        .option .checkmark:after {
-            content: "\2713";
-            width: 10px;
-            height: 10px;
-            display: block;
-            position: absolute;
-            top: 30%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0);
-            transition: 200ms ease-in-out 0s
-        }
-        
-        .option:hover input[type="radio"]~.checkmark {
-            background-color: #f4f4f4
-        }
-        
-        .option input[type="radio"]:checked~.checkmark {
-            background: green;
-            color: #fff;
-            transition: 300ms ease-in-out 0s
-        }
-        
-        .option input[type="radio"]:checked~.checkmark:after {
-            transform: translate(-50%, -50%) scale(1);
-            color: #fff
-        }
-        </style>
-</head>
-<body>
-    <div class="container mt-4 p-0">
-        <nav class="navbar navbar-expand-lg navbar-light bg-white pt-3 px-md-4 px-2">
-            <div class="container-fluid"> <a class="navbar-brand" href="/home">Cocktailology</a> <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav" aria-controls="nav" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button>
-                <div class="collapse navbar-collapse" id="nav">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item"> <a class="nav-link" href="#">Home</a> </li>
-                        <li class="nav-item"> <a class="nav-link" href="#">Account</a> </li>
-          
-                    </ul>
-                    
-                </div>
-            </div>
-        </nav>
-        <div class="row px-md-4 px-2 pt-4">
-            <div class="col-lg-8">
-                <p class="pb-2 fw-bold">Order</p>
-                <div class="card">
-                    <div>
-                        <div class="table-responsive px-md-4 px-2 pt-3">
-                            <table class="table table-borderless">
-                                <tbody>
-                                    <tr class="border-bottom">
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <div> <img class="pic" src="https://toppng.com/uploads/preview/cocktail-icon-clipart-cocktail-drinks-splash-11562965982ikwi02c99o.png" alt=""> </div>
-                                                <div class="ps-3 d-flex flex-column justify-content">
-                                                    <p class="fw-bold">Singapore Sling Package</p> <small class=" d-flex"> 
-                                                        <span class=" text-muted">Ingredients: </span> </small>
-                                                        <small class="d-flex"><span class="fw">Lemon</span></small>
-                                                        <small class="d-flex"><span class="fw">Tomato</span> </small> 
-                                                        
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="d-flex">
-                                                <p class="text-muted">$55.00</p>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="d-flex align-items-center"> <span class="pe-3 text-muted">Quantity</span> <span class="pe-3"> <input class="ps-2" type="number" value="1"></span>
-                                                
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    
-                                    
-                                    
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 payment-summary">
-                <p class="fw-bold pt-lg-0 pt-4 pb-2">Payment Summary</p>
-                <div class="card px-md-3 px-2 pt-4">
-                    
-                    <div class="d-flex flex-column b-bottom">
-                        <div class="d-flex justify-content-between py-3"> <small class="text-muted">Order Summary</small>
-                            <p>$122</p>
-                        </div>
-                        <div class="d-flex justify-content-between pb-3"> <small class="text-muted">Delivery Charge</small>
-                            <p>$6</p>
-                        </div>
-                        <div class="d-flex justify-content-between"> <small class="text-muted">Total Amount</small>
-                            <p>$128</p>
-                        </div>
-                    </div>
-                    <div class="d-flex"> 
-                        <div class="fw-bold d-flex flex-row">Checkout
+			body {
+				background-color: white;
+				line-height: 1rem;
+				font-size: 14px;
+				padding: 10px;
+			}
 
-                            <div class="p-2" id="paypal-button"></div>
-                        </div>
+			.container {
+				border-top-left-radius: 25px;
+				border-top-right-radius: 25px;
+				border-bottom-left-radius: 25px;
+				border-bottom-right-radius: 25px;
+				background-color: #eee;
+			}
 
+			.navbar-brand {
+				text-transform: uppercase;
+				font-size: 14px;
+				font-weight: 800;
+			}
 
-                    </div>
-                </div>
-            </div>
-          
-            <div class="col-lg-8 delivery px-md-3 px-1">
-                <p class="pt-4 fw-bold pb-3 ps-2">Delivery</p>
-                <div class="d-md-inline-flex justify-content-center align-items-center pb-4">
+			nav {
+				border-top-left-radius: 25px;
+				border-top-right-radius: 25px;
+				background-color: white;
+			}
 
-                    <div class="size d-flex ps-4"> <label class="option d-flex align-items-center"> <input type="radio" name="radio">
-                            <div class="card me-2">
-                                <div class="d-flex align-items-center">
-                                    <div class="d-flex align-items-center justify-content-center"> 
-                                        
-                                    </div>
-                                    <div class=" d-flex flex-column px-3">
-                                        <p class="fw-bold pb-1">Express</p> 
-                                        <small class="text-muted pb-1">Expected<span class="ps-1">delivery:</span></small> <small class="text-muted pb-1">1-3 Working Days</small>
-                                    </div>
-                                    <p class="fw-bold px-4">$6.00</p>
-                                </div>
-                            </div> <span class="checkmark"></span>
-                        </label> </div>
-                        
-                    <div class="size d-flex ps-4"> <label class="option d-flex align-items-center"> <input type="radio" name="radio">
-                            <div class="card me-4">
-                                <div class="d-flex align-items-center">
-                                    <div class="d-flex align-items-center justify-content-center"> 
-                                        
-                                    </div>
-                                    <div class=" d-flex flex-column px-3">
-                                        <p class="fw-bold pb-1">Economy</p> <small class="text-muted pb-1">Expected delivery:</small> <small class="text-muted pb-1">5-7 Working Days</small>
-                                    </div>
-                                    <p class="fw-bold px-4">$2.00</p>
-                                </div>
-                            </div> <span class="checkmark"></span>
-                        </label> </div>
-                    </div>
-                </div>
-                
+			.order .card {
+				position: relative;
+				background: #fff;
+				box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+			}
+
+			small {
+				font-size: 12px;
+			}
+
+			.cart {
+				line-height: 1;
+			}
+
+			.pic {
+				width: 70px;
+				height: 90px;
+				border-radius: 5px;
+			}
+
+			td {
+				vertical-align: middle;
+			}
+
+			.b-bottom {
+				border-bottom: 2px dotted black;
+				padding-bottom: 20px;
+			}
+
+			p {
+				margin: 0px;
+			}
+
+			table input {
+				width: 40px;
+				border: 1px solid #eee;
+			}
+
+			input:focus {
+				border: 1px solid #eee;
+				outline: none;
+			}
+
+			.payment-summary .unregistered {
+				width: 100%;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				background-color: #eee;
+				text-transform: uppercase;
+				font-size: 14px;
+			}
+
+			.payment-summary input {
+				width: 100%;
+				margin-right: 20px;
+			}
+
+			.del {
+				width: 35px;
+				height: 35px;
+				object-fit: cover;
+			}
+
+			.delivery .card {
+				padding: 10px 5px;
+			}
+
+			.option {
+				position: relative;
+				top: 50%;
+				display: block;
+				cursor: pointer;
+				color: #888;
+			}
+
+			.option input {
+				display: none;
+			}
+
+			.checkmark {
+				position: absolute;
+				top: 40%;
+				left: -25px;
+				height: 20px;
+				width: 20px;
+				background-color: #fff;
+				border: 1px solid #ccc;
+				border-radius: 50%;
+			}
+
+			.option input:checked ~ .checkmark:after {
+				display: block;
+			}
+
+			.option .checkmark:after {
+				content: "\2713";
+				width: 10px;
+				height: 10px;
+				display: block;
+				position: absolute;
+				top: 30%;
+				left: 50%;
+				transform: translate(-50%, -50%) scale(0);
+				transition: 200ms ease-in-out 0s;
+			}
+
+			.option:hover input[type="radio"] ~ .checkmark {
+				background-color: #f4f4f4;
+			}
+
+			.option input[type="radio"]:checked ~ .checkmark {
+				background: green;
+				color: #fff;
+				transition: 300ms ease-in-out 0s;
+			}
+
+			.option input[type="radio"]:checked ~ .checkmark:after {
+				transform: translate(-50%, -50%) scale(1);
+				color: #fff;
+			}
+		</style>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	</head>
+	<body>
+		<div class="container mt-4 p-0">
+			<nav
+				class="navbar navbar-expand-lg navbar-light bg-white pt-3 px-md-4 px-2"
+			>
+				<div class="container-fluid">
+					<a class="navbar-brand" href="/home">Cocktailology</a>
+					<button
+						class="navbar-toggler"
+						type="button"
+						data-bs-toggle="collapse"
+						data-bs-target="#nav"
+						aria-controls="nav"
+						aria-expanded="false"
+						aria-label="Toggle navigation"
+					>
+						<span class="navbar-toggler-icon"></span>
+					</button>
+					<div class="collapse navbar-collapse" id="nav">
+						<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+							<li class="nav-item">
+								<a class="nav-link" href="#">Home</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="#">Account</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</nav>
+			<div class="row px-md-4 px-2 pt-4">
+				<div class="col-lg-8">
+					<p class="pb-2 fw-bold">Order</p>
+					<div class="card">
+						<div>
+							<div class="table-responsive px-md-4 px-2 pt-3">
+								<table class="table table-borderless">
+									<tbody id="cart-packages"></tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-4 payment-summary">
+					<p class="fw-bold pt-lg-0 pt-4 pb-2">Payment Summary</p>
+					<div class="card px-md-3 px-2 pt-4">
+						<div class="d-flex flex-column b-bottom">
+							<div class="d-flex justify-content-between py-3">
+								<small class="text-muted">Order Summary</small>
+								<p id="order-total"></p>
+							</div>
+							<div class="d-flex justify-content-between pb-3">
+								<small class="text-muted"
+									>Delivery Charge</small
+								>
+								<p id="delivery-total"></p>
+							</div>
+							<div class="d-flex justify-content-between">
+								<small class="text-muted">Total Amount</small>
+								<p id="total-total"></p>
+							</div>
+						</div>
+						<div class="d-flex">
+							<div class="fw-bold d-flex flex-row">
+								Checkout
+
+								<div class="p-2" id="paypal-button"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-lg-8 delivery px-md-3 px-1">
+					<p class="pt-4 fw-bold pb-3 ps-2">Delivery</p>
+					<div
+						class="d-md-inline-flex justify-content-center align-items-center pb-4"
+					>
+						<div class="size d-flex ps-4">
+							<label class="option d-flex align-items-center">
+								<input
+									type="radio"
+									name="radio"
+									id="express-delivery"
+								/>
+								<div class="card me-2">
+									<div class="d-flex align-items-center">
+										<div
+											class="d-flex align-items-center justify-content-center"
+										></div>
+										<div class="d-flex flex-column px-3">
+											<p class="fw-bold pb-1">Express</p>
+											<small class="text-muted pb-1"
+												>Expected<span class="ps-1"
+													>delivery:</span
+												></small
+											>
+											<small class="text-muted pb-1"
+												>1-3 Working Days</small
+											>
+										</div>
+										<p class="fw-bold px-4">$6.00</p>
+									</div>
+								</div>
+								<span class="checkmark"></span>
+							</label>
+						</div>
+
+						<div class="size d-flex ps-4">
+							<label class="option d-flex align-items-center">
+								<input
+									type="radio"
+									name="radio"
+									id="economy-delivery"
+								/>
+								<div class="card me-4">
+									<div class="d-flex align-items-center">
+										<div
+											class="d-flex align-items-center justify-content-center"
+										></div>
+										<div class="d-flex flex-column px-3">
+											<p class="fw-bold pb-1">Economy</p>
+											<small class="text-muted pb-1"
+												>Expected delivery:</small
+											>
+											<small class="text-muted pb-1"
+												>5-7 Working Days</small
+											>
+										</div>
+										<p class="fw-bold px-4">$2.00</p>
+									</div>
+								</div>
+								<span class="checkmark"></span>
+							</label>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script
+			src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+			integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+			crossorigin="anonymous"
+		></script>
+
+		<div id="paypal-button"></div>
+
+		<script async>
             
-        </div>
-    
-        
-    
-    </div>
+			// var CREATE_PAYMENT_URL = "http://127.0.0.1:5000/payment";
+			// var EXECUTE_PAYMENT_URL = "http://127.0.0.1:5000/execute";
 
-    
+			// // paypal.Button.render(
+			// 	{
+			// 		//paypal template
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+			// 		env: "sandbox", // Or 'sandbox'
 
+			// 		commit: true, // Show a 'Pay Now' button
 
+			// 		payment: function () {
+			// 			return paypal.request
+			// 				.post(CREATE_PAYMENT_URL)
+			// 				.then(function (data) {
+			// 					return data.paymentID;
+			// 				});
+			// 		},
 
+			// 		onAuthorize: function (data) {
+			// 			return paypal.request
+			// 				.post(EXECUTE_PAYMENT_URL, {
+			// 					paymentID: data.paymentID,
+			// 					payerID: data.payerID,
+			// 				})
+			// 				.then(function (res) {
+			// 					console.log(res.success);
+			// 					// The payment is complete!
+			// 					// You can now show a confirmation message to the customer
+			// 				});
+			// 		},
+			// 	},
+			// 	"#paypal-button"
+			// );
+			const expressDelivery = document.getElementById("express-delivery");
+			const economyDelivery = document.getElementById("economy-delivery");
 
+			const deliveryTotal = document.getElementById("delivery-total");
+			const totalTotal = document.getElementById("total-total");
 
+			expressDelivery.onclick = function () {
+				deliveryTotal.innerText = "$6";
 
-    <div id="paypal-button"></div>
+				const orderTotal = document.getElementById("order-total");
+				const orderTotalPrice =
+					parseInt(orderTotal.innerText.slice(1)) || 0;
+				totalTotal.innerText = `$${orderTotalPrice + 6}`;
+			};
+			economyDelivery.onclick = function () {
+				deliveryTotal.innerText = "$2";
 
-<script src="https://www.paypalobjects.com/api/checkout.js"></script>
+				const orderTotal = document.getElementById("order-total");
+				const orderTotalPrice =
+					parseInt(orderTotal.innerText.slice(1)) || 0;
+				totalTotal.innerText = `$${orderTotalPrice + 2}`;
+			};
 
-<script>
-    var CREATE_PAYMENT_URL  = 'http://127.0.0.1:5000/payment';
-    var EXECUTE_PAYMENT_URL = 'http://127.0.0.1:5000/execute';
+			function showError(message) {
+				// Hide the table and button in the event of error
+				$("#cocktailTable").hide();
+				$("#buyBtn").hide();
 
-    paypal.Button.render({ //paypal template 
+				// Display an error under the main container
+				$("#main-container").append("<label>" + message + "</label>");
+			}
 
-        env: 'sandbox', // Or 'sandbox'
+			$(async () => {
+				var accountURL = "http://127.0.0.1:5013/account/50";
+				try {
+					const response = await fetch(accountURL);
+					const result = await response.json();
+					if (result.code === 201) {
+						// success case
+						const cart = result["data"]["cart"]; // list of order_item objects
+						const cartPackages =
+							document.getElementById("cart-packages");
+						const orderTotal =
+							document.getElementById("order-total");
+						cart.forEach(async (item) => {
+							const serviceURL = `http://127.0.0.1:5022/cocktail/${item.package_name}`;
+							const itemResponse = await fetch(serviceURL);
+							const itemResult = await itemResponse.json();
 
-        commit: true, // Show a 'Pay Now' button
+							if (itemResponse.status !== 200) {
+								print("error retrieving item");
+								return;
+							}
+							console.log(itemResult);
 
-        payment: function() {
-            return paypal.request.post(CREATE_PAYMENT_URL).then(function(data) {
-                return data.paymentID;
-            });
-        },
+							const oldTotal =
+								parseInt(orderTotal.innerText.slice(1)) || 0;
+							const increment = parseInt(
+								itemResult.data.cocktail_price.slice(1)
+							);
 
-        onAuthorize: function(data) {
-            return paypal.request.post(EXECUTE_PAYMENT_URL, {
-                paymentID: data.paymentID,
-                payerID:   data.payerID
-            }).then(function(res) {
+							orderTotal.innerText = "$" + (oldTotal + increment);
+							const ingredients =
+								itemResult.data.cocktail_ingredients;
+							console.log(ingredients);
 
-                console.log(res.success)
-                // The payment is complete!
-                // You can now show a confirmation message to the customer
-            });
-        }
+							const ingredientsList =
+								document.createElement("ul");
+							// ingredientsList.classList.add("d-flex");
+							ingredientsList.innerHTML +=
+								"<span class='text-muted'> Ingredients: </span>";
+							ingredients.forEach((ingredient) => {
+								const ingredientDisplay =
+									document.createElement("li");
+								ingredientDisplay.innerHTML +=
+									ingredient.c_ingredients;
+								ingredientDisplay.style.fontSize = "12px";
+								ingredientsList.appendChild(ingredientDisplay);
+							});
 
-    }, '#paypal-button');
-</script>
-</body>
+							const tableRow = document.createElement("tr");
+							tableRow.classList.add("border-bottom");
+
+							const tableData1 = document.createElement("td");
+							tableData1.innerHTML += `<div class='d-flex align-items-center'><div id='content'><img class='pic' src="{{url_for('static', filename='cocktail.png')}}" alt=''> </div><div class='ps-3 d-flex flex-column justify-content'><p class='fw-bold' id='package-name'>${item.package_name}</p></div</div>`;
+							tableData1.childNodes
+								.item("content")
+								.appendChild(ingredientsList);
+							tableRow.appendChild(tableData1);
+
+							const tableData2 = document.createElement("td");
+							tableData2.innerHTML += `<td><div class='d-flex'><span class='text-muted d-flex align-items-center pe-5'>${itemResult.data.cocktail_price}</span></td> <td><div class='d-flex align-items-center'> <span class=' text-muted'>Quantity</span> <span class=''> <input class='' type='number' value=${item.quantity}></span></div></div></td>`;
+							tableRow.appendChild(tableData2);
+
+							cartPackages.appendChild(tableRow);
+						});
+					} else if (response.status == 404) {
+						showError(result.message);
+					} else {
+						// unexpected outcome, throw the error
+						throw response.status;
+					}
+				} catch (error) {
+					// Errors when calling the service; such as network error,
+					// service offline, etc
+					showError(
+						"There is a problem retrieving cocktail data, please try again later.<br />" +
+							error
+					);
+				} // error
+			});
+		</script>
+		<script src="https://www.paypalobjects.com/api/checkout.js"></script>
+	</body>
 </html>
