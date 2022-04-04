@@ -32,6 +32,10 @@ def search_results():
 def account():
     return render_template('account.html')
 
+@app.route('/cart')
+def cart():
+    return render_template('cart.html')
+
 @app.route('/facebook')
 def loggedin():
     return redirect(url_for("facebook.login"))
