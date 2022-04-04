@@ -28,7 +28,7 @@ def create_account():
             print("\nReceived an account in JSON:", new_account_details)
 
             # do the actual work
-            # 1. Send order info {cart items}
+            # 1. Send account info {account details}
             result = processCreateAccount(new_account_details)
             print('\n------------------------')
             print('\nresult: ', result)
