@@ -4,25 +4,25 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 
 import os, sys
+from os import environ
 
 import requests
 from invokes import invoke_http
 
-import CreateAccount.amqp_setup as amqp_setup
+import amqp_setup as amqp_setup
 import pika
 import json
 
 app = Flask(__name__)
 CORS(app)
 
-account_URL = "http://localhost:5013/account"
-
-
+account_URL = environ.get('account_URL') or "http://localhost:5013/account"
 
 @app.route("/create_account", methods=['POST'])
 def create_account():
     # Simple check of input format and data of the request are JSON
     if request.is_json:
+        print(request.get_json())
         try:
             new_account_details = request.get_json()
             print("\nReceived an account in JSON:", new_account_details)
@@ -63,7 +63,9 @@ def processCreateAccount(new_account_details):
 
     # Check the order result; if a failure, send it to the error microservice.
     code = account_creation_result["code"]
-    message = json.dumps(account_creation_result)
+    # set email action to 1. email ms will send to customer about successful account creation
+    new_account_details["email_action"] ="1"
+    message = json.dumps(new_account_details)
 
    
     if code not in range(200, 300):
@@ -71,22 +73,20 @@ def processCreateAccount(new_account_details):
         pass
 
     else:
-        print('\n\n-----Publishing the (newly created account info) message with routing_key=create.success-----')        
+        print('\n\n-----Publishing the (newly created account info) message with routing_key=create.success-----')   
+        print("Body message: ", message)
         
         amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="create.success", 
-            body=message)
+        body=message)
     
     print("\nAccount details published to RabbitMQ Exchange.\n")
     # - reply from the invocation is not used;
     # continue even if this invocation fails
 
     return {
-        "code": 201,
-        "data": {
+            "code": 201,
             "account_creation_result": account_creation_result
         }
-    }
-
 
 # Execute this program if it is run as a main script (not by 'import')
 if __name__ == "__main__":
