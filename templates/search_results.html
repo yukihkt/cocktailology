@@ -92,7 +92,7 @@ img {
               </div>
            </section>
          
-
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
     <script>
       // Helper function to display error message
@@ -145,7 +145,10 @@ img {
             
                      rows += "<tr>" + eachRow + "</tr>";
                   }
-                  rows += "</ul> <a href='#' id='addCartBtn' type='button' class='btn btn-light form-control mt-3'>Add to Cart</a></div></li></ul></div></li>";
+                  rows += `</ul> 
+                          <a href='#' id='addCartBtn' type='button' class='btn btn-light form-control mt-3'>Add to Cart</a>
+                          <a href="#" onclick="addToWishlist('${info.cocktail_name}')" id='wishlistBtn' type='button' class='btn btn-success form-control mt-3'>Add to Wishlist</a>
+                          </div></li></ul></div></li>`;
                   
                       
                       // add all the rows to the table
@@ -165,6 +168,24 @@ img {
       ('There is a problem retrieving cocktail data, please try again later.<br />' + error);
               } // error
       });
+
+      function addToWishlist(drink){
+        console.log("hi")
+        let account_id = "{{session['account_id']}}"
+        let account_url = `http://localhost:5013/account/33`
+        axios.put(account_url, {
+          'wishlist': drink
+        }).then(response => {
+          console.log(response.data)
+          alert("Added Successfully")
+        }).catch(error => {
+          console.log(error.response.data)
+          alert("Failed to add Drink")
+        })
+
+        return true
+
+      }
   </script>
  <script>
    var search = document.getElementById('search');
