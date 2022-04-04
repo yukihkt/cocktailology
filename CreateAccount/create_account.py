@@ -1,6 +1,7 @@
 # complex ms in use case 1, orchestrates data from account to email
 # to test this ms, simultaneosly run email, amqp_setup and account ms in 3 separate CMD windows
 from flask import Flask, request, jsonify
+
 from flask_cors import CORS
 
 import os, sys

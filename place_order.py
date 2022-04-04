@@ -4,6 +4,7 @@ from flask_cors import CORS
 import os, sys
 from os import environ
 
+
 import requests
 from invokes import invoke_http
 
@@ -20,8 +21,6 @@ shipping_record_URL = environ.get('shipping_record_URL') or "http://localhost:50
 #activity_log_URL = "http://localhost:5002/activity_log"
 #error_URL = "http://localhost:5003/error"
 account_URL = environ.get('account_URL') or "http://localhost:5011//account" 
-
-
 
 
 @app.route("/place_order", methods=['POST'])
@@ -59,12 +58,8 @@ def place_order():
 
 
 def processPlaceOrder(order):
-
-    
     account_result = invoke_http(account_URL + "/" + str(order['account_id']))
     shippingAddress = account_result['data']['shipping_add']
-
-
 
     # 2. Send the order info 
     # Invoke the order microservice
@@ -75,47 +70,16 @@ def processPlaceOrder(order):
   
     # Check the order result; if a failure, send it to the error microservice.
     code = order_result["code"]
-    message = json.dumps(order_result)
 
-    amqp_setup.check_setup()
+    # TODO:not needed right this one - andrea
+    # message = json.dumps(order_result)
 
     if code not in range(200, 300):
-        # Inform the error microservice
-        #print('\n\n-----Invoking error microservice as order fails-----')
-        print('\n\n-----Publishing the (order error) message with routing_key=order.error-----')
-
-        # invoke_http(error_URL, method="POST", json=order_result)
-        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="order.error", 
-            body=message, properties=pika.BasicProperties(delivery_mode = 2)) 
-        # make message persistent within the matching queues until it is received by some receiver 
-        # (the matching queues have to exist and be durable and bound to the exchange)
-
-        # - reply from the invocation is not used;
-        # continue even if this invocation fails        
-        print("\nOrder status ({:d}) published to the RabbitMQ Exchange:".format(
-            code), order_result)
-
-        # 7. Return error
         return {
             "code": 500,
             "data": {"order_result": order_result},
             "message": "Order creation failure sent for error handling."
         }
-
-    # Notice that we are publishing to "Activity Log" only when there is no error in order creation.
-    # In http version, we first invoked "Activity Log" and then checked for error.
-    # Since the "Activity Log" binds to the queue using '#' => any routing_key would be matched 
-    # and a message sent to “Error” queue can be received by “Activity Log” too.
-
-    else:
-        # 4. Record new order
-        # record the activity log anyway
-        #print('\n\n-----Invoking activity_log microservice-----')
-        print('\n\n-----Publishing the (order info) message with routing_key=order.info-----')        
-
-        # invoke_http(activity_log_URL, method="POST", json=order_result)            
-        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="order.info", 
-            body=message)
     
     print("\nOrder published to RabbitMQ Exchange.\n")
     # - reply from the invocation is not used;
@@ -138,8 +102,6 @@ def processPlaceOrder(order):
 
         # invoke_http(error_URL, method="POST", json=shipping_result)
         message = json.dumps(shipping_result)
-        # amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="shipping.error", 
-        #     body=message, properties=pika.BasicProperties(delivery_mode = 2))
 
         print("\nShipping status ({:d}) published to the RabbitMQ Exchange:".format(
             code), shipping_result)
@@ -163,15 +125,6 @@ def processPlaceOrder(order):
         }
     }
 
-
-# Execute this program if it is run as a main script (not by 'import')
 if __name__ == "__main__":
     print("This is flask " + os.path.basename(__file__) + " for placing an order...")
     app.run(host="0.0.0.0", port=5100, debug=True)
-    # Notes for the parameters: 
-    # - debug=True will reload the program automatically if a change is detected;
-    #   -- it in fact starts two instances of the same flask program, and uses one of the instances to monitor the program changes;
-    # - host="0.0.0.0" allows the flask program to accept requests sent from any IP/host (in addition to localhost),
-    #   -- i.e., it gives permissions to hosts with any IP to access the flask program,
-    #   -- as long as the hosts can already reach the machine running the flask program along the network;
-    #   -- it doesn't mean to use http://0.0.0.0 to access the flask program.
