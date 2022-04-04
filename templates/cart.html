@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" 
+    integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" 
+    crossorigin="anonymous">
+    <link href='https://fonts.googleapis.com/css?family=Josefin Sans' rel='stylesheet'>
+    <script src="https://unpkg.com/vue@3"></script>
+
+    <title>My Cart</title>
+</head>
+<body style="font-family: Josefin Sans;">
+<div id="app">
+    <div class="container-fluid">
+        <div class="row justify-content-md-center">
+            <!-- <div class="col-center">
+                One of three columns
+            </div> -->
+            <h1>{{session['name']}}'s Cart</h1>
+            <!-- <p>Please stay with us, you're almost done!</p> -->
+    
+            <!-- {{session['account_id']}} -->
+        </div>
+        <div>
+            <p id="output"></p>
+        </div>
+    </div>
+</div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        Vue.createApp({
+            data() {
+            return {
+                email: "",
+                address1: "",
+                address2: "",
+                address3: "",
+                name: "{{session['name']}}",
+                // id : "{{session['account_id']}}",
+                id:50,
+                cart: ""
+            }
+        },
+
+        created: function (){
+            console.log(this.id)
+            axios.get(`http://localhost:5013/account/${this.id}`)
+            .then(response => {
+                console.log(response.data)
+                console.log(response.data.data.cart)
+                console.log(typeof response.data.data.cart)
+                this.cart = response.data.data.cart
+                document.getElementById('output').innerHTML = JSON.stringify(this.cart)
+            })
+            .catch(error => {
+                console.log(error.response.data)
+                //will move to .then, it is here for testing only right now
+                //window.location.href = 'https://localhost:5000/search_package'
+            })
+        }
+
+    }).mount('#app')
+
+    </script>
+</body>
+</html>

@@ -64,6 +64,17 @@
             }
         },
 
+
+        created: function (){
+            console.log(this.id)
+            axios.get(`http://localhost:5013/account/${this.id}`)
+            .then(response => {
+                console.log(response)                
+            })
+            .catch(error => {
+                console.log(error.response.data)
+            })
+
         // created: function (){
         //     console.log(this.id)
         //     axios.get(`http://localhost:5013/account/${this.id}`)
@@ -96,6 +107,7 @@
                         console.log(error.response.data)
                     })
             }
+
         }
             
 
