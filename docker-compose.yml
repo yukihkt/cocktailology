@@ -10,76 +10,84 @@ services:
   ###################################
   account:
     build:
-      context: ./
+      context: ./Account
       dockerfile: account.Dockerfile
     image: yukihkt/account:cocktailology
     restart: always
-    environment:
-      dbURL: mysql+mysqlconnector://cocktailology@host.docker.internal:3306/account
-      PYTHONUNBUFFERED: 1
+    ports: 
+    - "5013:5013"
 
   ###################################
   # Cocktail: The Cocktail microservice
   ###################################
   cocktail:
     build:
-      context: ./
+      context: ./Cocktail
       dockerfile: cocktail.Dockerfile
     image: yukihkt/cocktail:cocktailology
     restart: always
     environment:
       dbURL: mysql+mysqlconnector://cocktailology@host.docker.internal:3306/cocktail
       PYTHONUNBUFFERED: 1
+    ports:
+    - "5022:5022"
  
   ###################################
   # Order: The Order microservice
   ###################################
   order:
     build:
-      context: ./
+      context: ./Order
       dockerfile: order.Dockerfile
     image: yukihkt/order:cocktailology
     restart: always
     environment:
       dbURL: mysql+mysqlconnector://cocktailology@host.docker.internal:3306/order
       PYTHONUNBUFFERED: 1
+    ports:
+    - "5031:5031"
  
   #######################################################
   # Shipping Record: The Shipping Record microservice
   #######################################################
   shipping_record:
     build:
-      context: ./
+      context: ./ShippingRecord
       dockerfile: shipping_record.Dockerfile
     image: yukihkt/shipping_record:cocktailology
     restart: always
     environment:
+      dbURL: mysql+mysqlconnector://cocktailology@host.docker.internal:3306/shipping_record
       PYTHONUNBUFFERED: 1
+    ports:
+      - "5033:5033"
 
  #######################################################
   # Review: The Review microservice
   #######################################################
   review:
     build:
-      context: ./
+      context: ./Review
       dockerfile: review.Dockerfile
     image: yukihkt/review:cocktailology
     restart: always
     environment:
+      dbURL: mysql+mysqlconnector://cocktailology@host.docker.internal:3306/review
       PYTHONUNBUFFERED: 1
+    ports:
+      - "5021:5021"
 
   ##################################
   # Paypal: The Paypal microservice
   ##################################
-  paypal:
-    build:
-      context: ./
-      dockerfile: paypal.Dockerfile
-    image: yukihkt/paypal:cocktailology
-    restart: always
-    environment:
-      dbURL: mysql+mysqlconnector://cocktailology@host.docker.internal:3306/paypal
-      PYTHONUNBUFFERED: 1
+  # paypal:
+  #   build:
+  #     context: ./Payment
+  #     dockerfile: paypal.Dockerfile
+  #   image: yukihkt/paypal:cocktailology
+  #   restart: always
+  #   ports:
+  #   - "5012:5012"
 
   ####################################
   # RabbitMQ: The messaging broker   
@@ -99,7 +107,7 @@ services:
   #################################################
   e_mail:
     build:
-      context: ./
+      context: ./Email
       dockerfile: e_mail.Dockerfile
     image: yukihkt/e_mail:cocktailology
     restart: always
@@ -115,7 +123,7 @@ services:
   ###############################################
   create_account:
     build:
-      context: ./
+      context: ./CreateAccount
       dockerfile: create_account.Dockerfile
     image: yukihkt/create_account:cocktailology
     restart: always
@@ -136,7 +144,7 @@ services:
   ###############################################
   search_package:
     build:
-      context: ./
+      context: ./SearchPackage
       dockerfile: search_package.Dockerfile
     image: yukihkt/search_package:cocktailology
     restart: always
@@ -155,7 +163,7 @@ services:
   ###############################################
   place_order:
     build:
-      context: ./
+      context: ./PlaceOrder
       dockerfile: place_order.Dockerfile
     image: yukihkt/place_order:cocktailology
     restart: always
