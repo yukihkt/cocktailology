@@ -128,8 +128,7 @@ img {
                   
                   var reviews = cocktail.review_result.data
                   var ingredients = info.cocktail_ingredients
-                  
-                  
+
                   var rows = "";
                   rows = " <li class='list-group-item'> <div class='media align-items-lg-center flex-column flex-lg-row p-3'> <div class='media-body order-2 order-lg-1'>";
                   rows += "<h5 class='mt-0 font-weight-bold mb-2'>" + info.cocktail_name + "</h5> ";
@@ -146,12 +145,32 @@ img {
             
                      rows += "<tr>" + eachRow + "</tr>";
                   }
-                  // rows += `</ul> <a href='/payment/${cocktail}' rel='noopener noreferrer' id='buyBtn' type='button' class='btn btn-light form-control mt-3'>Add to Cart</a></div></li></ul></div></li>`;
-                  
-                      
+                  rows += `</ul> <button type='button' id='addToCartBtn' class='btn btn-light form-control mt-3'>Add to Cart</button></div></li></ul></div></li>`;    
                       // add all the rows to the table
                       $('#cocktailTable').append(rows);
-                  
+                  const addToCartBtn = document.getElementById("addToCartBtn");
+                  addToCartBtn.onclick = async function(){
+                    const id = "{{session['account_id']}}"
+                    accountURL = `http://localhost:5013/account/${id}`
+                    console.log("session id: ", id);
+                    const response = await fetch(accountURL, {
+                      method: 'PUT',
+                      headers: {
+                        'Content-Type': 'application/json'
+                      },
+                      body: JSON.stringify({
+                        "cart": { 
+                          "name": info.cocktail_name, 
+                          "price": parseInt(info.cocktail_price.slice(1)),
+                          "quantity": 1, 
+                          "currency": "SGD"
+                        },
+                      })
+                    });
+                    const result = response.json();
+                    console.log(result);
+                  }
+    
                   } else if (response.status == 404) {
                       
                       showError(result.message);
@@ -167,9 +186,5 @@ img {
               } // error
       });
   </script>
- <script>
-   var search = document.getElementById('search');
-   console.log(search);
- </script>
 </body>
 </html>

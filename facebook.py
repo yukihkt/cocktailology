@@ -25,10 +25,16 @@ def homepage():
 def search_package():
     return render_template("search_package.html")
 
+
+@app.route('/payment')
+def payment():
+    return render_template("payment.html")
+
 @app.route('/orderconfirm'){
     def orderconfirm():
         return render_template("orderconfirm.html")
 }
+
 
 @app.route('/search_results')
 def search_results():
@@ -42,6 +48,10 @@ def account():
 @app.route('/facebook')
 def loggedin():
     return redirect(url_for("facebook.login"))
+
+@app.route('/paypal')
+def paypal():
+    return render_template('paypal.html') 
 
 @app.route('/order_history')
 def order_history():
