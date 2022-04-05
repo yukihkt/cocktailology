@@ -34,10 +34,6 @@ def account():
     return render_template('account.html')
 
 
-@app.route('/payment')
-def payment():
-    return render_template('payment.html')
-
 @app.route('/facebook')
 def loggedin():
     return redirect(url_for("facebook.login"))
