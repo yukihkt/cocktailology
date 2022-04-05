@@ -15,7 +15,7 @@ services:
     image: yukihkt/account:cocktailology
     restart: always
     environment:
-      dbURL: mysql+mysqlconnector://cocktailology@host.docker.internal:3306/order
+      dbURL: mysql+mysqlconnector://cocktailology@host.docker.internal:3306/account
       PYTHONUNBUFFERED: 1
 
   ###################################
@@ -24,11 +24,11 @@ services:
   cocktail:
     build:
       context: ./
-      dockerfile: order.Dockerfile
-    image: yukihkt/order:cocktailology
+      dockerfile: cocktail.Dockerfile
+    image: yukihkt/cocktail:cocktailology
     restart: always
     environment:
-      dbURL: mysql+mysqlconnector://cocktailology@host.docker.internal:3306/order
+      dbURL: mysql+mysqlconnector://cocktailology@host.docker.internal:3306/cocktail
       PYTHONUNBUFFERED: 1
  
   ###################################
@@ -78,10 +78,8 @@ services:
     image: yukihkt/paypal:cocktailology
     restart: always
     environment:
-      dbURL: mysql+mysqlconnector://cocktailology@host.docker.internal:3306/book
+      dbURL: mysql+mysqlconnector://cocktailology@host.docker.internal:3306/paypal
       PYTHONUNBUFFERED: 1
-    ports:
-      - "5010:5010"
 
   ####################################
   # RabbitMQ: The messaging broker   
@@ -123,7 +121,7 @@ services:
     restart: always
     depends_on:
       - account
-      - email
+      - e_mail
       - rabbitmq
     environment:
       rabbit_host: rabbitmq
@@ -166,7 +164,7 @@ services:
       - order
       - shipping_record
       - cocktail
-      - email
+      - e_mail
       - rabbitmq
     environment:
       rabbit_host: rabbitmq
