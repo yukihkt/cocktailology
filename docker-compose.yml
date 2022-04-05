@@ -12,7 +12,7 @@ services:
     build:
       context: ./Account
       dockerfile: account.Dockerfile
-    image: yukihkt/account:cocktailology
+    image: euodiatqy/account:cocktailology
     restart: always
     ports: 
     - "5013:5013"
@@ -24,7 +24,7 @@ services:
     build:
       context: ./Cocktail
       dockerfile: cocktail.Dockerfile
-    image: yukihkt/cocktail:cocktailology
+    image: euodiatqy/cocktail:cocktailology
     restart: always
     environment:
       dbURL: mysql+mysqlconnector://cocktailology@host.docker.internal:3306/cocktail
@@ -39,7 +39,7 @@ services:
     build:
       context: ./Order
       dockerfile: order.Dockerfile
-    image: yukihkt/order:cocktailology
+    image: euodiatqy/order:cocktailology
     restart: always
     environment:
       dbURL: mysql+mysqlconnector://cocktailology@host.docker.internal:3306/order
@@ -54,7 +54,7 @@ services:
     build:
       context: ./ShippingRecord
       dockerfile: shipping_record.Dockerfile
-    image: yukihkt/shipping_record:cocktailology
+    image: euodiatqy/shipping_record:cocktailology
     restart: always
     environment:
       dbURL: mysql+mysqlconnector://cocktailology@host.docker.internal:3306/shipping_record
@@ -69,7 +69,7 @@ services:
     build:
       context: ./Review
       dockerfile: review.Dockerfile
-    image: yukihkt/review:cocktailology
+    image: euodiatqy/review:cocktailology
     restart: always
     environment:
       dbURL: mysql+mysqlconnector://cocktailology@host.docker.internal:3306/review
@@ -109,7 +109,7 @@ services:
     build:
       context: ./Email
       dockerfile: e_mail.Dockerfile
-    image: yukihkt/e_mail:cocktailology
+    image: euodiatqy/e_mail:cocktailology
     restart: always
     depends_on:
       - rabbitmq
@@ -125,7 +125,7 @@ services:
     build:
       context: ./CreateAccount
       dockerfile: create_account.Dockerfile
-    image: yukihkt/create_account:cocktailology
+    image: euodiatqy/create_account:cocktailology
     restart: always
     depends_on:
       - account
@@ -146,7 +146,7 @@ services:
     build:
       context: ./SearchPackage
       dockerfile: search_package.Dockerfile
-    image: yukihkt/search_package:cocktailology
+    image: euodiatqy/search_package:cocktailology
     restart: always
     depends_on:
       - review
@@ -165,7 +165,7 @@ services:
     build:
       context: ./PlaceOrder
       dockerfile: place_order.Dockerfile
-    image: yukihkt/place_order:cocktailology
+    image: euodiatqy/place_order:cocktailology
     restart: always
     depends_on:
       - account
