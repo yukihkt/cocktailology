@@ -152,12 +152,13 @@ def update_order(order_id):
         # update status
         data = request.get_json()
         if data['status']:
-            order.orderStatus = data['status']
+            order.status = data['status']
             db.session.commit()
             return jsonify(
                 {
                     "code": 200,
                     "data": order.json()
+                    
                 }
             ), 200
     except Exception as e:
