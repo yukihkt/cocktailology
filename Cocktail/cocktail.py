@@ -8,7 +8,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('cocktail_URL') or 'mysql+mysqlconnector://root@localhost:3306/cocktail'
+app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('cocktail_URL') or 'mysql+mysqlconnector://root:root@localhost:3306/cocktail'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
 
@@ -126,6 +126,7 @@ def updateqtys():
         # update status
         data = request.get_json() #what is sent by place_order
         print(data)
+        result = []
         for item in data:
             print(item)
             qty = item["quantity"]
@@ -135,30 +136,27 @@ def updateqtys():
             cocktail = Cocktail.query.filter_by(cocktail_name=cocktail_name).first()
             print("qty",qty,"quantity_available",cocktail.json()["quantity_available"])
             if(cocktail.json()["quantity_available"]<qty):  
-                return jsonify(
-                    {
-                        "code": 200,
-                        "data": {
+                result.append({
                             "qty_avail": cocktail.json()["quantity_available"],
-                            "qty_ordered": qty
-                        },
-                        "status": "failure"
-                    }
-                ), 200 
+                            "qty_ordered": qty,
+                            "status": "failure"
+                        })
             else:
                 # re-loop and update each one to database (commit to db)
                 # exit the loop and return 200
                 
-                return jsonify(
-                    {
-                        "code": 200,
-                        "data": {
+                result.append({
                             "qty_avail": cocktail.json()["quantity_available"],
-                            "qty_ordered": qty
-                        },
-                        "status": "success"
-                    }
-                ), 200 
+                            "qty_ordered": qty,
+                            "status": "success"
+                        })
+
+        return jsonify(
+            {
+                "code": 200,
+                "data": result
+            }
+        )
 
     except Exception as e:
         return jsonify(
