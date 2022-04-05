@@ -10,7 +10,7 @@ CORS(app)
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Column, ForeignKey, Integer, Table
 from datetime import datetime
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/shipping_record'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:3306/shipping_record'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 

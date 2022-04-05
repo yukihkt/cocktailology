@@ -19,6 +19,7 @@
 			}
 
 			body {
+				background-image:  url('/static/cocktail_background.jpg');
 				background-color: white;
 				line-height: 1rem;
 				font-size: 14px;
@@ -318,40 +319,40 @@
 
 		<script async>
             
-			// var CREATE_PAYMENT_URL = "http://127.0.0.1:5000/payment";
-			// var EXECUTE_PAYMENT_URL = "http://127.0.0.1:5000/execute";
+			var CREATE_PAYMENT_URL = "http://127.0.0.1:5000/payment";
+			var EXECUTE_PAYMENT_URL = "http://127.0.0.1:5000/execute";
 
-			// // paypal.Button.render(
-			// 	{
-			// 		//paypal template
+			paypal.Button.render(
+				{
+					//paypal template
 
-			// 		env: "sandbox", // Or 'sandbox'
+					env: "sandbox", // Or 'sandbox'
 
-			// 		commit: true, // Show a 'Pay Now' button
+					commit: true, // Show a 'Pay Now' button
 
-			// 		payment: function () {
-			// 			return paypal.request
-			// 				.post(CREATE_PAYMENT_URL)
-			// 				.then(function (data) {
-			// 					return data.paymentID;
-			// 				});
-			// 		},
+					payment: function () {
+						return paypal.request
+							.post(CREATE_PAYMENT_URL)
+							.then(function (data) {
+								return data.paymentID;
+							});
+					},
 
-			// 		onAuthorize: function (data) {
-			// 			return paypal.request
-			// 				.post(EXECUTE_PAYMENT_URL, {
-			// 					paymentID: data.paymentID,
-			// 					payerID: data.payerID,
-			// 				})
-			// 				.then(function (res) {
-			// 					console.log(res.success);
-			// 					// The payment is complete!
-			// 					// You can now show a confirmation message to the customer
-			// 				});
-			// 		},
-			// 	},
-			// 	"#paypal-button"
-			// );
+					onAuthorize: function (data) {
+						return paypal.request
+							.post(EXECUTE_PAYMENT_URL, {
+								paymentID: data.paymentID,
+								payerID: data.payerID,
+							})
+							.then(function (res) {
+								console.log(res.success);
+								// The payment is complete!
+								// You can now show a confirmation message to the customer
+							});
+					},
+				},
+				"#paypal-button"
+			);
 			const expressDelivery = document.getElementById("express-delivery");
 			const economyDelivery = document.getElementById("economy-delivery");
 

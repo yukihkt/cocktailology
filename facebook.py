@@ -24,9 +24,6 @@ def homepage():
 def search_package():
     return render_template("search_package.html")
 
-@app.route('/payment')
-def payment():
-    return render_template("payment.html")
 
 @app.route('/search_results')
 def search_results():
@@ -36,9 +33,6 @@ def search_results():
 def account():
     return render_template('account.html')
 
-@app.route('/cart')
-def cart():
-    return render_template('cart.html')
 
 @app.route('/payment')
 def payment():
@@ -51,6 +45,10 @@ def loggedin():
 @app.route('/order_history')
 def order_history():
     return render_template("account_pages/order_history.html")
+
+@app.route('/order_confirmed')
+def order_confirmed():
+    return render_template("orderconfirm.html")
 
 @app.route('/account_details')
 def account_details():

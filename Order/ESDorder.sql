@@ -54,11 +54,10 @@ INSERT INTO `order` (`order_id`, `account_id`, `orderStatus`, `created`) VALUES
 
 DROP TABLE IF EXISTS `order_item`;
 CREATE TABLE IF NOT EXISTS `order_item` (
-  `item_id` int(11) NOT NULL AUTO_INCREMENT,
   `order_id` int(11) NOT NULL,
   `packageName` char(64) NOT NULL,
   `quantity` int(11) NOT NULL,
-  PRIMARY KEY (`item_id`),
+  PRIMARY KEY (`packageName`),
   KEY `FK_order_id` (`order_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
@@ -66,9 +65,9 @@ CREATE TABLE IF NOT EXISTS `order_item` (
 -- Dumping data for table `order_item`
 --
 
-INSERT INTO `order_item` (`item_id`, `order_id`, `packageName`, `quantity`) VALUES
-(1, 1, 'Bloody Mary', 1),
-(2, 1, 'Singapore Sling', 1);
+INSERT INTO `order_item` ( `order_id`, `packageName`, `quantity`) VALUES
+(1, 'Bloody Mary', 1),
+(1, 'Singapore Sling', 1);
 
 --
 -- Constraints for dumped tables
