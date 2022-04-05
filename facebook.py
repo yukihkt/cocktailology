@@ -24,6 +24,10 @@ def homepage():
 def search_package():
     return render_template("search_package.html")
 
+@app.route('/payment')
+def payment():
+    return render_template("payment.html")
+
 @app.route('/search_results')
 def search_results():
     return render_template("search_results.html")

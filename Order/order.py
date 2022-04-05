@@ -105,15 +105,15 @@ def find_by_order_id(order_id):
     ), 404
 
 
-@app.route("/order/<string:order_id>", methods=['POST'])
-def create_order(order_id):
+@app.route("/order", methods=['POST'])
+def create_order():
     account_id = request.json.get('account_id', None)
     order = Order(account_id=account_id, orderStatus='NEW')
 
     cart_item = request.json.get('cart_item')
     for item in cart_item:
         order.order_item.append(Order_Item(
-            order_id=item['order_id'], item_id=item['item_id'], packageName=item['packageName'], quantity=item['quantity']))
+            packageName=item['packageName'], quantity=item['quantity']))
 
     try:
         db.session.add(order)
