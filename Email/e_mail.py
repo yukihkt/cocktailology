@@ -22,7 +22,7 @@ import os
 
 import amqp_setup
 
-monitorBindingKey='#.success'
+monitorBindingKey='#'
 
 def receiveAcountDetails():
     amqp_setup.check_setup()
@@ -62,7 +62,7 @@ def processAccountDetails(account):
         <body>
         <b>Hi {account['account_name']}!</b><br>
         We are so happy to see you join our family! &#128513;<br>
-        Feel free to scroll through our page to check out our drinks <a href="https://localhost:9000">here</a>. <br><br>
+        Feel free to scroll through our page to check out our drinks after loggin in <a href="https://localhost:9000">here</a>. <br><br>
           </p>
           Warmest Regards,<br>
           Cocktailogy Development Team
