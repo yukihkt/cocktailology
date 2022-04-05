@@ -15,7 +15,7 @@ paypalrestsdk.configure({
 
 @app.route('/')
 def index():
-    return render_template('paypal.html') 
+    return render_template('payment.html') 
 
 @app.route('/payment', methods=['POST'])
 def payment():
