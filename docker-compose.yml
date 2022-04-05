@@ -1,0 +1,187 @@
+version: "3.8"
+
+volumes:
+  rabbitmq_data:
+
+services:
+
+  ###################################
+  # Account: The Account microservice
+  ###################################
+  account:
+    build:
+      context: ./Account
+      dockerfile: account.Dockerfile
+    image: euodiatqy/account:cocktailology
+    restart: always
+    ports: 
+    - "5013:5013"
+
+  ###################################
+  # Cocktail: The Cocktail microservice
+  ###################################
+  cocktail:
+    build:
+      context: ./Cocktail
+      dockerfile: cocktail.Dockerfile
+    image: euodiatqy/cocktail:cocktailology
+    restart: always
+    environment:
+      dbURL: mysql+mysqlconnector://cocktailology@host.docker.internal:3306/cocktail
+      PYTHONUNBUFFERED: 1
+    ports:
+    - "5022:5022"
+ 
+  ###################################
+  # Order: The Order microservice
+  ###################################
+  order:
+    build:
+      context: ./Order
+      dockerfile: order.Dockerfile
+    image: euodiatqy/order:cocktailology
+    restart: always
+    environment:
+      dbURL: mysql+mysqlconnector://cocktailology@host.docker.internal:3306/order
+      PYTHONUNBUFFERED: 1
+    ports:
+    - "5031:5031"
+ 
+  #######################################################
+  # Shipping Record: The Shipping Record microservice
+  #######################################################
+  shipping_record:
+    build:
+      context: ./ShippingRecord
+      dockerfile: shipping_record.Dockerfile
+    image: euodiatqy/shipping_record:cocktailology
+    restart: always
+    environment:
+      dbURL: mysql+mysqlconnector://cocktailology@host.docker.internal:3306/shipping_record
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "5033:5033"
+
+ #######################################################
+  # Review: The Review microservice
+  #######################################################
+  review:
+    build:
+      context: ./Review
+      dockerfile: review.Dockerfile
+    image: euodiatqy/review:cocktailology
+    restart: always
+    environment:
+      dbURL: mysql+mysqlconnector://cocktailology@host.docker.internal:3306/review
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "5021:5021"
+
+  ##################################
+  # Paypal: The Paypal microservice
+  ##################################
+  # paypal:
+  #   build:
+  #     context: ./Payment
+  #     dockerfile: paypal.Dockerfile
+  #   image: yukihkt/paypal:cocktailology
+  #   restart: always
+  #   ports:
+  #   - "5012:5012"
+
+  ####################################
+  # RabbitMQ: The messaging broker   
+  ####################################
+  rabbitmq:
+    image: rabbitmq:3-management
+    hostname: esd-rabbit
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes: 
+      - rabbitmq_data:/var/lib/rabbitmq
+      
+  #################################################
+  # Email: The Email microservice
+  #################################################
+  e_mail:
+    build:
+      context: ./Email
+      dockerfile: e_mail.Dockerfile
+    image: euodiatqy/e_mail:cocktailology
+    restart: always
+    depends_on:
+      - rabbitmq
+    environment:
+      rabbit_host: rabbitmq
+      rabbit_port: 5672
+      PYTHONUNBUFFERED: 1
+
+  ###############################################
+  # Create Account: The Create Account microservice
+  ###############################################
+  create_account:
+    build:
+      context: ./CreateAccount
+      dockerfile: create_account.Dockerfile
+    image: euodiatqy/create_account:cocktailology
+    restart: always
+    depends_on:
+      - account
+      - e_mail
+      - rabbitmq
+    environment:
+      rabbit_host: rabbitmq
+      rabbit_port: 5672
+      account_URL: http://account:5013/account
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "5010:5010"
+
+###############################################
+  # Search Package: The Search Package microservice
+  ###############################################
+  search_package:
+    build:
+      context: ./SearchPackage
+      dockerfile: search_package.Dockerfile
+    image: euodiatqy/search_package:cocktailology
+    restart: always
+    depends_on:
+      - review
+      - cocktail
+    environment:
+      review_URL: http://review:5021/review 
+      cocktail_URL: http://cocktail:5022/cocktail 
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "5020:5020"
+ 
+  ###############################################
+  # Place Order: The Place Order microservice
+  ###############################################
+  place_order:
+    build:
+      context: ./PlaceOrder
+      dockerfile: place_order.Dockerfile
+    image: euodiatqy/place_order:cocktailology
+    restart: always
+    depends_on:
+      - account
+      - order
+      - shipping_record
+      - cocktail
+      - e_mail
+      - rabbitmq
+    environment:
+      rabbit_host: rabbitmq
+      rabbit_port: 5672
+      account_URL: http://account:5013/account
+      order_URL: http://order:5031/order
+      shipping_record_URL: http://shipping_record:5033/shipping_record 
+      cocktail_URL: http://cocktail:5022/cocktail 
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "5030:5030"
+ 

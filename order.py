@@ -12,7 +12,7 @@ import json
 from os import environ
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/ESDorder'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:3306/order'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
 
@@ -122,7 +122,7 @@ def create_order():
         return jsonify(
             {
                 "code": 500,
-                "message": "An internal error occurred while creating the order. " + str(e)
+                "message": "An error occurred while creating the order. " + str(e)
             }
         ), 500
 
@@ -175,4 +175,4 @@ def update_order(order_id):
 
 if __name__ == '__main__':
     print("This is flask for " + os.path.basename(__file__) + ": manage orders ...")
-    app.run(host='0.0.0.0', port=5031, debug=True)
+    app.run(host='0.0.0.0', port=5003, debug=True)
