@@ -1,3 +1,4 @@
+from cgitb import html
 from flask import Flask,render_template,request, jsonify, url_for, session, redirect
 from flask_dance.contrib.facebook import make_facebook_blueprint, facebook
 from dotenv import load_dotenv
@@ -24,6 +25,10 @@ def homepage():
 def search_package():
     return render_template("search_package.html")
 
+@app.route('/orderconfirm'){
+    def orderconfirm():
+        return render_template("orderconfirm.html")
+}
 
 @app.route('/search_results')
 def search_results():

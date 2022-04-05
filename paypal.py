@@ -1,7 +1,7 @@
 
 #paypal wrapper
 
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, request, redirect
 import paypalrestsdk
 
 app = Flask(__name__)
@@ -15,7 +15,7 @@ paypalrestsdk.configure({
 
 @app.route('/')
 def index():
-    return render_template('payment.html') 
+    return render_template('paypal.html') 
 
 @app.route('/payment', methods=['POST'])
 def payment():
@@ -31,14 +31,13 @@ def payment():
             "item_list": {
                 "items": [{
                     "name": "testitem",
-                    "sku": "12345",
                     "price": "500.00",
                     "currency": "SGD",
                     "quantity": 1}]},
             "amount": {
                 "total": "500.00",
                 "currency": "SGD"},
-            "description": "This is the payment transaction description."}]})
+                }]})
 
     if payment.create():
         print('Payment success!')
@@ -56,6 +55,7 @@ def execute():
     if payment.execute({'payer_id' : request.form['payerID']}):
         print('Execute success!')
         success = True
+        return redirect("orderconfirm.html")
         
     else:
         print(payment.error)
