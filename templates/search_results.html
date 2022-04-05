@@ -57,7 +57,7 @@ img {
             <a class="nav-link active" aria-current="page" href="/search_package">Search Drinks</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Cart</a>
+            <a class="nav-link" href="/payment">Cart</a>
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -129,12 +129,13 @@ img {
                   var reviews = cocktail.review_result.data
                   var ingredients = info.cocktail_ingredients
                   
+                  
                   var rows = "";
                   rows = " <li class='list-group-item'> <div class='media align-items-lg-center flex-column flex-lg-row p-3'> <div class='media-body order-2 order-lg-1'>";
                   rows += "<h5 class='mt-0 font-weight-bold mb-2'>" + info.cocktail_name + "</h5> ";
                   rows += "<p class='font-italic text-muted mb-0 small'>" + info.cocktail_description + "</p>";
                   rows += "<h6 class='text-center font-weight-bold my-2'>"+ info.cocktail_price + " per package</h6></br>";
-                  rows += "<div class='d-flex align-items-center justify-content-center mt-1'><img src='{{url_for('static', filename='cocktail.png')}}' alt='Cocktail Image' width='100' class='ml-lg-5 order-1 order-lg-2'></div></br><h4 class='text-center'> Ingredients </h4>";
+                  rows += "<div class='d-flex align-items-center justify-content-center mt-1'><img src='{{url_for('static', filename='"+ info.cocktail_name + ".jpg')}}' alt='Cocktail Image' width='100' class='ml-lg-5 order-1 order-lg-2'></div></br><h4 class='text-center'> Ingredients </h4>";
                   for (const ingredient of ingredients ) {
                     eachRow ="<ul class='list-group small mx-5 text-center'> <li class='list-item'>"+ ingredient.c_ingredients + " x " + ingredient.quantity +"</li></ul>";
                     rows += "<tr>" + eachRow + "</tr>";

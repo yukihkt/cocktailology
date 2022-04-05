@@ -48,11 +48,11 @@ class Order(db.Model):
 class Order_Item(db.Model):
     __tablename__ = 'order_item'
 
-    item_id = db.Column(db.Integer, primary_key=True)
+ 
     order_id = db.Column(db.ForeignKey(
         'order.order_id', ondelete='CASCADE', onupdate='CASCADE'), nullable=False, index=True)
 
-    packageName= db.Column(db.String(64), nullable=False)
+    packageName= db.Column(db.String(64), primary_key=True, nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
 
     # order_id = db.Column(db.String(36), db.ForeignKey('order.order_id'), nullable=False)
@@ -61,7 +61,7 @@ class Order_Item(db.Model):
         'Order', primaryjoin='Order_Item.order_id == Order.order_id', backref='order_item')
 
     def json(self):
-        return {'item_id': self.item_id, 'packageName': self.packageName, 'quantity': self.quantity, 'order_id': self.order_id}
+        return {'packageName': self.packageName, 'quantity': self.quantity, 'order_id': self.order_id}
 
 
 @app.route("/order")

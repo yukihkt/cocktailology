@@ -14,7 +14,7 @@
 </head>
 <style>
   body{
-    background-image: url(../images/cocktail_background.jpg);
+    background-image: url('/static/cocktail_background.jpg');
     background-size: cover;
     background-attachment: fixed;
     font-family: 'Josefin Sans';
@@ -39,7 +39,7 @@
             <a class="nav-link active" aria-current="page" href="/search_package">Search Drinks</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Cart</a>
+            <a class="nav-link" href="/payment">Cart</a>
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -58,7 +58,7 @@
   <!-- <section class="bg-dark" style="--bs-bg-opacity: .5;"> -->
   <section>
       <!-- TODO: replace form action and method -->
-        <div class="card border-dark mb-3 mt-5">
+        <div class="card border-light mb-3 mt-5">
           <form action="">
           <h3 class="card-header ">Name</h3>
           <div class="card-body text-primary">
