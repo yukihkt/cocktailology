@@ -19,7 +19,7 @@
 			}
 
 			body {
-				background-image:  url('/static/cocktail_background.jpg');
+				background-image: url("/static/cocktail_background.jpg");
 				background-color: white;
 				line-height: 1rem;
 				font-size: 14px;
@@ -171,6 +171,7 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 	</head>
 	<body>
+		<!-- <script src="https://www.paypalobjects.com/api/checkout.js"></script> -->
 		<div class="container mt-4 p-0">
 			<nav
 				class="navbar navbar-expand-lg navbar-light bg-white pt-3 px-md-4 px-2"
@@ -191,7 +192,9 @@
 					<div class="collapse navbar-collapse" id="nav">
 						<ul class="navbar-nav me-auto mb-2 mb-lg-0">
 							<li class="nav-item">
-								<a class="nav-link" href="#">Home</a>
+								<a class="nav-link" href="/search_package"
+									>Search</a
+								>
 							</li>
 							<li class="nav-item">
 								<a class="nav-link" href="#">Account</a>
@@ -235,7 +238,6 @@
 						<div class="d-flex">
 							<div class="fw-bold d-flex flex-row">
 								Checkout
-
 								<div class="p-2" id="paypal-button"></div>
 							</div>
 						</div>
@@ -301,6 +303,15 @@
 										<p class="fw-bold px-4">$2.00</p>
 									</div>
 								</div>
+								<div>
+									<button
+										type="button"
+										class="btn btn-success"
+										id="pay-button"
+									>
+										Pay
+									</button>
+								</div>
 								<span class="checkmark"></span>
 							</label>
 						</div>
@@ -314,14 +325,50 @@
 			integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
 			crossorigin="anonymous"
 		></script>
+		<!-- <script>
+			var CREATE_PAYMENT_URL = "http://localhost:5014/payment";
+			var EXECUTE_PAYMENT_URL = "http://localhost:5014/execute";
+			const total = document.getElementById("total-total");
+			const totalPayment = total.innerText.slice(1);
+			const delivery = document.getElementById("delivery-total");
+			const deliveryPayment = delivery.innerText.slice(1);
 
-		<div id="paypal-button"></div>
+			paypal.Button.render(
+				{
+					env: "sandbox", // Or 'sandbox'
 
+					commit: true, // Show a 'Pay Now' button
+
+					payment: function () {
+						console.log(paypal);
+						return paypal.request
+							.post(CREATE_PAYMENT_URL, {
+								account_id: "{{session['account_id']}}",
+								total: parseInt(totalPayment),
+								delivery: parseInt(deliveryPayment),
+							})
+							.then(function (data) {
+								return data.paymentID;
+							});
+					},
+
+					onAuthorize: function (data) {
+						return paypal.request
+							.post(EXECUTE_PAYMENT_URL, {
+								paymentID: data.paymentID,
+								payerID: data.payerID,
+							})
+							.then(function (res) {
+								alert(res.success);
+								// The payment is complete!
+								// You can now show a confirmation message to the customer
+							});
+					},
+				},
+				"#paypal-button"
+			);
+		</script> -->
 		<script async>
-            
-
-			
-
 			const expressDelivery = document.getElementById("express-delivery");
 			const economyDelivery = document.getElementById("economy-delivery");
 
@@ -354,25 +401,59 @@
 				$("#main-container").append("<label>" + message + "</label>");
 			}
 
+			const payButton = document.getElementById("pay-button");
+			payButton.onclick = async function () {
+				console.log("clicked!");
+				const total = document.getElementById("total-total");
+				const totalPayment = total.innerText.slice(1);
+				const delivery = document.getElementById("delivery-total");
+				const deliveryPayment = delivery.innerText.slice(1);
+				try {
+					const paymentURL = "http://localhost:5014/payment";
+					const response = await fetch(paymentURL, {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json",
+						},
+						body: JSON.stringify({
+							account_id: "{{session['account_id']}}",
+							total: parseInt(totalPayment),
+							delivery: parseInt(deliveryPayment),
+						}),
+					});
+					const result = await response.json();
+					console.log(result);
+					if (result.code === 200) {
+						alert("Payment successful!");
+					} else {
+						alert("Payment error");
+					}
+				} catch (e) {
+					showError(e.message);
+				}
+			};
+
 			$(async () => {
-				var accountURL = "http://127.0.0.1:5013/account/50";
+				const id = "{{session['account_id']}}";
+				accountURL = `http://localhost:5013/account/${id}`;
 				try {
 					const response = await fetch(accountURL);
 					const result = await response.json();
 					if (result.code === 201) {
 						// success case
 						const cart = result["data"]["cart"]; // list of order_item objects
+						console.log(cart);
 						const cartPackages =
 							document.getElementById("cart-packages");
 						const orderTotal =
 							document.getElementById("order-total");
 						cart.forEach(async (item) => {
-							const serviceURL = `http://127.0.0.1:5022/cocktail/${item.package_name}`;
+							const serviceURL = `http://localhost:5022/cocktail/${item.name}`;
 							const itemResponse = await fetch(serviceURL);
 							const itemResult = await itemResponse.json();
 
 							if (itemResponse.status !== 200) {
-								print("error retrieving item");
+								console.log("error retrieving item");
 								return;
 							}
 							console.log(itemResult);
@@ -386,11 +467,9 @@
 							orderTotal.innerText = "$" + (oldTotal + increment);
 							const ingredients =
 								itemResult.data.cocktail_ingredients;
-							console.log(ingredients);
 
 							const ingredientsList =
 								document.createElement("ul");
-							// ingredientsList.classList.add("d-flex");
 							ingredientsList.innerHTML +=
 								"<span class='text-muted'> Ingredients: </span>";
 							ingredients.forEach((ingredient) => {
@@ -406,7 +485,7 @@
 							tableRow.classList.add("border-bottom");
 
 							const tableData1 = document.createElement("td");
-							tableData1.innerHTML += `<div class='d-flex align-items-center'><div id='content'><img class='pic' src="{{url_for('static', filename='cocktail.png')}}" alt=''> </div><div class='ps-3 d-flex flex-column justify-content'><p class='fw-bold' id='package-name'>${item.package_name}</p></div</div>`;
+							tableData1.innerHTML += `<div class='d-flex align-items-center'><div id='content'><img class='pic' src="{{url_for('static', filename='cocktail.png')}}" alt=''> </div><div class='ps-3 d-flex flex-column justify-content'><p class='fw-bold' id='package-name'>${item.name}</p></div</div>`;
 							tableData1.childNodes
 								.item("content")
 								.appendChild(ingredientsList);
@@ -434,6 +513,5 @@
 				} // error
 			});
 		</script>
-		
 	</body>
 </html>
