@@ -8,7 +8,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('cocktail_URL') or 'mysql+mysqlconnector://root:root@localhost:3306/cocktail'
+app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('cocktail_URL') or 'mysql+mysqlconnector://root@localhost:3306/cocktail'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
 
@@ -120,9 +120,59 @@ def find_qty_cocktail_id(cocktail_id):
     ), 404
 
     #need to create a form to see how many order someone wants to make 
+@app.route("/cocktail", methods=['PUT'])
+def updateqtys():
+    try:
+        # update status
+        data = request.get_json() #what is sent by place_order
+        print(data)
+        for item in data:
+            print(item)
+            qty = item["quantity"]
+            # loop each item, check each quantity against available quantity. if one has not enough quantity, immediately return
+            # return 200 but status set to failure when inventory too low to deduct
+            cocktail_name = item["cocktail_name"]
+            cocktail = Cocktail.query.filter_by(cocktail_name=cocktail_name).first()
+            print("qty",qty,"quantity_available",cocktail.json()["quantity_available"])
+            if(cocktail.json()["quantity_available"]<qty):  
+                return jsonify(
+                    {
+                        "code": 200,
+                        "data": {
+                            "qty_avail": cocktail.json()["quantity_available"],
+                            "qty_ordered": qty
+                        },
+                        "status": "failure"
+                    }
+                ), 200 
+            else:
+                # re-loop and update each one to database (commit to db)
+                # exit the loop and return 200
+                
+                return jsonify(
+                    {
+                        "code": 200,
+                        "data": {
+                            "qty_avail": cocktail.json()["quantity_available"],
+                            "qty_ordered": qty
+                        },
+                        "status": "success"
+                    }
+                ), 200 
 
+    except Exception as e:
+        return jsonify(
+            {
+                "code": 500,
+                "data": {
+                    "qty": 30
+                },
+                "message": "An error occurred while updating the order. " + str(e)
+                #cocktail.quantity_available
+            }
+        ), 500
 
-
+    
 if __name__ == '__main__':
     print("This is flask for " + os.path.basename(__file__) + ": cocktail information...")
     app.run(host="0.0.0.0", port=5022, debug=True)
