@@ -16,7 +16,7 @@ import json
 app = Flask(__name__)
 CORS(app)
 
-account_URL = environ.get('account_URL') or "http://localhost:5013/account"
+account_URL = "http://localhost:5013/account"
 
 @app.route("/create_account", methods=['POST'])
 def create_account():
