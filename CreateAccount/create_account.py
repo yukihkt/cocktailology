@@ -76,7 +76,7 @@ def processCreateAccount(new_account_details):
         print('\n\n-----Publishing the (newly created account info) message with routing_key=create.success-----')   
         print("Body message: ", message)
         
-        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="create.success", 
+        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="try.email", 
         body=message)
     
     print("\nAccount details published to RabbitMQ Exchange.\n")

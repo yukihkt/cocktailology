@@ -25,10 +25,9 @@ def homepage():
 def search_package():
     return render_template("search_package.html")
 
-@app.route('/orderconfirm'){
-    def orderconfirm():
+@app.route('/orderconfirm')
+def orderconfirm():
         return render_template("orderconfirm.html")
-}
 
 @app.route('/search_results')
 def search_results():

@@ -50,17 +50,17 @@ services:
   #######################################################
   # Shipping Record: The Shipping Record microservice
   #######################################################
-  shipping_record:
-    build:
-      context: ./ShippingRecord
-      dockerfile: shipping_record.Dockerfile
-    image: euodiatqy/shipping_record:cocktailology
-    restart: always
-    environment:
-      dbURL: mysql+mysqlconnector://cocktailology@host.docker.internal:3306/shipping_record
-      PYTHONUNBUFFERED: 1
-    ports:
-      - "5033:5033"
+  # shipping_record:
+  #   build:
+  #     context: ./ShippingRecord
+  #     dockerfile: shipping_record.Dockerfile
+  #   image: euodiatqy/shipping_record:cocktailology
+  #   restart: always
+  #   environment:
+  #     dbURL: mysql+mysqlconnector://cocktailology@host.docker.internal:3306/shipping_record
+  #     PYTHONUNBUFFERED: 1
+  #   ports:
+  #     - "5033:5033"
 
  #######################################################
   # Review: The Review microservice
@@ -149,11 +149,11 @@ services:
     image: euodiatqy/search_package:cocktailology
     restart: always
     depends_on:
+      - cocktail 
       - review
-      - cocktail
     environment:
-      review_URL: http://review:5021/review 
       cocktail_URL: http://cocktail:5022/cocktail 
+      review_URL: http://review:5021/review 
       PYTHONUNBUFFERED: 1
     ports:
       - "5020:5020"
@@ -170,8 +170,6 @@ services:
     depends_on:
       - account
       - order
-      - shipping_record
-      - cocktail
       - e_mail
       - rabbitmq
     environment:
@@ -179,7 +177,6 @@ services:
       rabbit_port: 5672
       account_URL: http://account:5013/account
       order_URL: http://order:5031/order
-      shipping_record_URL: http://shipping_record:5033/shipping_record 
       cocktail_URL: http://cocktail:5022/cocktail 
       PYTHONUNBUFFERED: 1
     ports:

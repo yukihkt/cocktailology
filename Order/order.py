@@ -12,7 +12,7 @@ import json
 from os import environ
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/ESDorder'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:3306/ESDorder'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
 
@@ -52,7 +52,7 @@ class Order_Item(db.Model):
     order_id = db.Column(db.ForeignKey(
         'order.order_id', ondelete='CASCADE', onupdate='CASCADE'), nullable=False, index=True)
 
-    packageName= db.Column(db.String(64), primary_key=True, nullable=False)
+    cocktail_name= db.Column(db.String(64), primary_key=True, nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
 
     # order_id = db.Column(db.String(36), db.ForeignKey('order.order_id'), nullable=False)
@@ -61,7 +61,7 @@ class Order_Item(db.Model):
         'Order', primaryjoin='Order_Item.order_id == Order.order_id', backref='order_item')
 
     def json(self):
-        return {'packageName': self.packageName, 'quantity': self.quantity, 'order_id': self.order_id}
+        return {'cocktail_name': self.cocktail_name, 'quantity': self.quantity, 'order_id': self.order_id}
 
 
 @app.route("/order")
@@ -107,13 +107,14 @@ def find_by_order_id(order_id):
 
 @app.route("/order", methods=['POST'])
 def create_order():
-    account_id = request.json.get('account_id', None)
+
+    account_id = request.json.get('account_id',None)
     order = Order(account_id=account_id, orderStatus='NEW')
 
     cart_item = request.json.get('cart_item')
     for item in cart_item:
         order.order_item.append(Order_Item(
-            packageName=item['packageName'], quantity=item['quantity']))
+            cocktail_name=item['cocktail_name'], quantity=item['quantity']))
 
     try:
         db.session.add(order)

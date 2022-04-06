@@ -11,8 +11,8 @@ connection = pika.BlockingConnection(
 
 channel = connection.channel()
 
-exchangename="email_topic"
-exchangetype="topic"
+exchangename="email_direct"
+exchangetype="direct"
 channel.exchange_declare(exchange=exchangename, exchange_type=exchangetype, durable=True)
 
 
@@ -22,7 +22,7 @@ queue_name = 'email'
 channel.queue_declare(queue=queue_name, durable=True)
 
 #bind email queue
-channel.queue_bind(exchange=exchangename, queue=queue_name, routing_key='create.success') 
+channel.queue_bind(exchange=exchangename, queue=queue_name, routing_key='try.email') 
 
 """
 This function in this module sets up a connection and a channel to a local AMQP broker,

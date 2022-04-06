@@ -126,35 +126,62 @@ def updateqtys():
         # update status
         data = request.get_json() #what is sent by place_order
         print(data)
+        final = ""
         result = []
         for item in data:
             print(item)
             qty = item["quantity"]
             # loop each item, check each quantity against available quantity. if one has not enough quantity, immediately return
             # return 200 but status set to failure when inventory too low to deduct
-            cocktail_name = item["cocktail_name"]
+            cocktail_name = item["cocktail_name"]   
+            print(type(cocktail_name),cocktail_name)         
             cocktail = Cocktail.query.filter_by(cocktail_name=cocktail_name).first()
-            print("qty",qty,"quantity_available",cocktail.json()["quantity_available"])
-            if(cocktail.json()["quantity_available"]<qty):  
-                result.append({
-                            "qty_avail": cocktail.json()["quantity_available"],
-                            "qty_ordered": qty,
-                            "status": "failure"
-                        })
-            else:
-                # re-loop and update each one to database (commit to db)
-                # exit the loop and return 200
-                
-                result.append({
-                            "qty_avail": cocktail.json()["quantity_available"],
-                            "qty_ordered": qty,
-                            "status": "success"
-                        })
+            if not cocktail:
+                return jsonify(
+            {
+                "code": 404,
+                "message": cocktail_name +" does not exist"
+            }
+        )
 
+            else:
+                # print("qty",qty,"quantity_available",cocktail.json()["quantity_available"])
+                # print("Cocktail name: ", cocktail_name)
+                # print("\nquantity_available: ", cocktail.json()["quantity_available"])
+                # print("\nquantity_ordered: ", qty)
+                if(cocktail.json()["quantity_available"]<qty):  
+                    result.append({
+                                "qty_avail": cocktail.json()["quantity_available"],
+                                "qty_ordered": qty,
+                                "status": "failure"
+                            })
+                    print(result)
+
+                else:
+                    # re-loop and update each one to database (commit to db)
+                    # exit the loop and return 200
+                    
+                    result.append({
+                                "qty_avail": cocktail.json()["quantity_available"],
+                                "qty_ordered": qty,
+                                "status": "success"
+                            })
+                    print(result)
+                    
+        print("final: " , result)
+        for eachcocktail in result:
+            if eachcocktail['status'] == "failure":
+                return jsonify(
+            {
+                "code": 200,
+                "data": "failure"
+            }
+        )
+    
         return jsonify(
             {
                 "code": 200,
-                "data": result
+                "data": "success"
             }
         )
 

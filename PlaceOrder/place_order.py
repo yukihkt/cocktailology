@@ -51,13 +51,19 @@ def place_order():
 
 def processCocktailCheck(order):
     print('\n-----Invoking cocktail microservice-----')
-    # TODO: might need to change cart_item format
-    cart_items = order["cart_item"]
+    print(type(order))
+    # cart_items = json.dumps(order['cart_item'])
+    cart_items = order['cart_item']
+    print( type(cart_items),cart_items )
     cocktail_result = invoke_http(cocktail_URL, method='PUT', json=cart_items)
     print('cocktail_result:', cocktail_result)
 
+    # return cocktail_result
+
     code = cocktail_result["code"]
-    message = json.dumps(cocktail_result)
+    # message = json.dumps(cocktail_result)
+    status = cocktail_result["data"]
+
 
     amqp_setup.check_setup()
     if code not in range(200, 300):
@@ -68,20 +74,48 @@ def processCocktailCheck(order):
             "message": "Internal server error when updating inventory stock."
         }
     else:
-        print('\n\n-----Publishing the (inventory low email) message with routing_key=inventory.error-----')
+        print('\n\n-----Inventory low, attempting to call amqp-----')
         # action_email = 2: send email to 2 diff people
-        if message.status!="success":
-            print("Publishing inventory low amqp queue")
-            amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="no.inventory.order",
-                body=message, properties=pika.BasicProperties(delivery_mode = 2))      
-            print("\nOrder status ({:d}) published to the RabbitMQ Exchange:".format(
-                code), cocktail_result)
+        if status!="success":
+            message2 = json.loads('{"code":201,"message": "Inventory low"}')
+            account_id = order['account_id']
+            account_id = str(account_id)
+            account_result = invoke_http(account_URL+'/'+account_id, method='GET')
+            
+            print('account_result:', account_result)
+
+            # return cocktail_result
+            code = account_result["code"]
+
+            amqp_setup.check_setup()
+            if code not in range(200, 300):
+                # 7. Return error
+                return {
+                    "code": 500,
+                    "data": {"account_result": account_result},
+                    "message": "Internal server error when getting account details."
+                }
+            else:
+                print('\n\n-----Publishing the (low inventory) message with routing_key=try.email-----')
+                message2["email"] = account_result['data']['email']
+                message2["account_name"] = account_result['data']['account_name']
+                message2["email_action"] = "2"
+                print("Publishing inventory low amqp queue")
+                message2 = json.dumps(message2)
+                amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="try.email",
+                    body=message2, properties=pika.BasicProperties(delivery_mode = 2))      
+                print("\nOrder status ({:d}) published to the RabbitMQ Exchange:".format(
+                    code), cocktail_result)
+                return {
+                    "code": 200,
+                    "message": "Inventory is low, email sent"
+                }
         else:
             # call order
             order_result = processPlaceOrder(order)
 
             shipping_result = invoke_http(
-                shipping_record_URL, method="POST", json=order['data'])
+                shipping_record_URL, method="POST", json=order['cart_item'])
             print("shipping_result:", shipping_result, '\n')
 
             code = shipping_result["code"]
@@ -95,6 +129,7 @@ def processCocktailCheck(order):
                     code), shipping_result)
 
                 # 7. Return error
+                
                 return {
                     "code": 400,
                     "data": {
@@ -102,20 +137,21 @@ def processCocktailCheck(order):
                         "shipping_result": shipping_result
                     },
                     "message": "Simulated shipping record error sent for error handling."
-        }
+                }
 
-    # 7. Return created order, shipping record
-    return {
-        "code": 201,
-        "data": {
-            "order_result": order_result,
-            "shipping_result": shipping_result
-        }
-    }
+            # 7. Return created order, shipping record
+            return {
+                "code": 201,
+                "data": {
+                    "order_result": order_result,
+                    "shipping_result": shipping_result
+                }
+            }
 
 
 def processPlaceOrder(order):
     print('\n-----Invoking order microservice-----')
+
     order_result = invoke_http(order_URL, method='POST', json=order)
     print('order_result:', order_result)
   
@@ -127,12 +163,12 @@ def processPlaceOrder(order):
     if code not in range(200, 300):
         # Inform the error microservice
         #print('\n\n-----Invoking error microservice as order fails-----')
-        print('\n\n-----Publishing the (order error) message with routing_key=order.error-----')
+        # print('\n\n-----Publishing the (order error) message with routing_key=order.error-----')
 
-        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="order.error", 
-            body=message, properties=pika.BasicProperties(delivery_mode = 2))      
-        print("\nOrder status ({:d}) published to the RabbitMQ Exchange:".format(
-            code), order_result)
+        # amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="order.error", 
+        #     body=message, properties=pika.BasicProperties(delivery_mode = 2))      
+        # print("\nOrder status ({:d}) published to the RabbitMQ Exchange:".format(
+        #     code), order_result)
 
         # 7. Return error
         return {

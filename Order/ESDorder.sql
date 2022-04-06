@@ -21,8 +21,8 @@ SET time_zone = "+00:00";
 --
 -- Database: `order`
 --
-CREATE DATABASE IF NOT EXISTS `order` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
-USE `order`;
+CREATE DATABASE IF NOT EXISTS `ESDorder` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+USE `ESDorder`;
 
 -- --------------------------------------------------------
 
@@ -55,9 +55,9 @@ INSERT INTO `order` (`order_id`, `account_id`, `orderStatus`, `created`) VALUES
 DROP TABLE IF EXISTS `order_item`;
 CREATE TABLE IF NOT EXISTS `order_item` (
   `order_id` int(11) NOT NULL,
-  `packageName` char(64) NOT NULL,
+  `cocktail_name` char(64) NOT NULL,
   `quantity` int(11) NOT NULL,
-  PRIMARY KEY (`packageName`),
+  PRIMARY KEY (`cocktail_name`),
   KEY `FK_order_id` (`order_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS `order_item` (
 -- Dumping data for table `order_item`
 --
 
-INSERT INTO `order_item` ( `order_id`, `packageName`, `quantity`) VALUES
+INSERT INTO `order_item` ( `order_id`, `cocktail_name`, `quantity`) VALUES
 (1, 'Bloody Mary', 1),
 (1, 'Singapore Sling', 1);
 

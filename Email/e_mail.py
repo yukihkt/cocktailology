@@ -22,7 +22,7 @@ import os
 
 import amqp_setup
 
-monitorBindingKey='#'
+monitorBindingKey='try.email'
 
 def receiveAcountDetails():
     amqp_setup.check_setup()
@@ -46,7 +46,6 @@ def processAccountDetails(account):
     port = 465  # For SSL
     if account["email_action"]=="1":
       sender_email = "cocktailogy.esd@gmail.com"
-      # sender_p = input("Type your password and press enter: ")
       sender_p = "cockt4ilogy!"
       
       receiver_email = account["email"]
@@ -63,6 +62,46 @@ def processAccountDetails(account):
         <b>Hi {account['account_name']}!</b><br>
         We are so happy to see you join our family! &#128513;<br>
         Feel free to scroll through our page to check out our drinks after loggin in <a href="https://localhost:9000">here</a>. <br><br>
+          </p>
+          Warmest Regards,<br>
+          Cocktailogy Development Team
+        </body>
+      </html>
+      """
+      # Turn these into plain/html MIMEText objects
+      part2 = MIMEText(html, "html")
+      # Add HTML/plain-text parts to MIMEMultipart message
+      message.attach(part2)
+      # Create a secure SSL context
+      context = ssl.create_default_context()
+
+      # !! do not store email password in code. Use Input to let user type in their password when running the script
+      with smtplib.SMTP_SSL("smtp.gmail.com", port, context=context) as server:
+          server.login(sender_email, sender_p)
+          server.sendmail(sender_email, receiver_email, message.as_string())
+
+      print("Email has been sent to the customer that their account has been successfully created.")
+      
+    elif account["email_action"] == "2":
+      sender_email = "cocktailogy.esd@gmail.com"
+      sender_p = "cockt4ilogy!"
+      
+      receiver_email = account["email"]
+      print("account : ",account)
+      print("account name: ",account['account_name'])
+
+      message = MIMEMultipart("alternative")
+      message["Subject"] = "Cocktailology pickup order not fulfilled"
+      message["From"] = sender_email
+      message["To"] = receiver_email
+
+      # TODO: replace # with our deployed app login page
+      html = f"""\
+      <html>
+        <body>
+        <b>Hi {account['account_name']},</b><br>
+        We are sorry to inform you that we have no more stock for your order items. Our inventory is low, we will let you know when the stock is replenished!<br> Click
+        <a href="https://localhost:9000">here</a> to see more drinks!<br><br>
           </p>
           Warmest Regards,<br>
           Cocktailogy Development Team
