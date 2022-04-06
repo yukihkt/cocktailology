@@ -30,10 +30,10 @@ def search_package():
 def payment():
     return render_template("payment.html")
 
-@app.route('/orderconfirm'){
-    def orderconfirm():
-        return render_template("orderconfirm.html")
-}
+@app.route('/orderconfirm')
+def orderconfirm():
+    return render_template("orderconfirm.html")
+
 
 
 @app.route('/search_results')
