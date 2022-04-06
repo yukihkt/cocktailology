@@ -9,6 +9,10 @@ Cocktailology aims to provide cocktail packages to customers at affordable price
 ##### start our app
 ```python app.py```
 
+##### Login with facebook tester account
+email: m.douglasg5t2@gmail.com
+password: Test123*
+
 # 1. Scenario Use Cases
 ## 1.1 User Creates Account
 ![image](https://user-images.githubusercontent.com/89770787/161910171-938059a1-cd6d-4b55-9e3c-5458dbaaf273.png)
