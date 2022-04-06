@@ -5,6 +5,19 @@ volumes:
 
 services:
 
+  ####################################
+  # RabbitMQ: The messaging broker   
+  ####################################
+  rabbitmq:
+    image: rabbitmq:3-management
+    hostname: cocktailology
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes: 
+      - rabbitmq_data:/var/lib/rabbitmq
+
   ###################################
   # Account: The Account microservice
   ###################################
@@ -12,7 +25,7 @@ services:
     build:
       context: ./Account
       dockerfile: account.Dockerfile
-    image: euodiatqy/account:cocktailology
+    image: yukihkt/account:cocktailology
     restart: always
     ports: 
     - "5013:5013"
@@ -24,7 +37,7 @@ services:
     build:
       context: ./Cocktail
       dockerfile: cocktail.Dockerfile
-    image: euodiatqy/cocktail:cocktailology
+    image: yukihkt/cocktail:cocktailology
     restart: always
     environment:
       dbURL: mysql+mysqlconnector://cocktailology@host.docker.internal:3306/cocktail
@@ -39,7 +52,7 @@ services:
     build:
       context: ./Order
       dockerfile: order.Dockerfile
-    image: euodiatqy/order:cocktailology
+    image: yukihkt/order:cocktailology
     restart: always
     environment:
       dbURL: mysql+mysqlconnector://cocktailology@host.docker.internal:3306/order
@@ -54,7 +67,7 @@ services:
   #   build:
   #     context: ./ShippingRecord
   #     dockerfile: shipping_record.Dockerfile
-  #   image: euodiatqy/shipping_record:cocktailology
+  #   image: yukihkt/shipping_record:cocktailology
   #   restart: always
   #   environment:
   #     dbURL: mysql+mysqlconnector://cocktailology@host.docker.internal:3306/shipping_record
@@ -69,7 +82,7 @@ services:
     build:
       context: ./Review
       dockerfile: review.Dockerfile
-    image: euodiatqy/review:cocktailology
+    image: yukihkt/review:cocktailology
     restart: always
     environment:
       dbURL: mysql+mysqlconnector://cocktailology@host.docker.internal:3306/review
@@ -89,18 +102,7 @@ services:
   #   ports:
   #   - "5012:5012"
 
-  ####################################
-  # RabbitMQ: The messaging broker   
-  ####################################
-  rabbitmq:
-    image: rabbitmq:3-management
-    hostname: esd-rabbit
-    restart: always
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-    volumes: 
-      - rabbitmq_data:/var/lib/rabbitmq
+
       
   #################################################
   # Email: The Email microservice
@@ -109,12 +111,12 @@ services:
     build:
       context: ./Email
       dockerfile: e_mail.Dockerfile
-    image: euodiatqy/e_mail:cocktailology
+    image: yukihkt/e_mail:cocktailology
     restart: always
     depends_on:
       - rabbitmq
     environment:
-      rabbit_host: rabbitmq
+      rabbit_host: cocktailology
       rabbit_port: 5672
       PYTHONUNBUFFERED: 1
 
@@ -125,14 +127,14 @@ services:
     build:
       context: ./CreateAccount
       dockerfile: create_account.Dockerfile
-    image: euodiatqy/create_account:cocktailology
+    image: yukihkt/create_account:cocktailology
     restart: always
     depends_on:
       - account
       - e_mail
       - rabbitmq
     environment:
-      rabbit_host: rabbitmq
+      rabbit_host: cocktailology
       rabbit_port: 5672
       account_URL: http://account:5013/account
       PYTHONUNBUFFERED: 1
@@ -146,7 +148,7 @@ services:
     build:
       context: ./SearchPackage
       dockerfile: search_package.Dockerfile
-    image: euodiatqy/search_package:cocktailology
+    image: yukihkt/search_package:cocktailology
     restart: always
     depends_on:
       - cocktail 
@@ -165,7 +167,7 @@ services:
     build:
       context: ./PlaceOrder
       dockerfile: place_order.Dockerfile
-    image: euodiatqy/place_order:cocktailology
+    image: yukihkt/place_order:cocktailology
     restart: always
     depends_on:
       - account
@@ -173,7 +175,7 @@ services:
       - e_mail
       - rabbitmq
     environment:
-      rabbit_host: rabbitmq
+      rabbit_host: cocktailology
       rabbit_port: 5672
       account_URL: http://account:5013/account
       order_URL: http://order:5031/order
@@ -181,4 +183,3 @@ services:
       PYTHONUNBUFFERED: 1
     ports:
       - "5030:5030"
- 

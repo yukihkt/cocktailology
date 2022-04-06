@@ -172,7 +172,7 @@
 	</head>
 	<body>
 		<!-- <script src="https://www.paypalobjects.com/api/checkout.js"></script> -->
-		<div class="container mt-4 p-0">
+		<div class="container mt-4 p-0" id="info">
 			<nav
 				class="navbar navbar-expand-lg navbar-light bg-white pt-3 px-md-4 px-2"
 			>
@@ -245,7 +245,7 @@
 				</div>
 
 				<div class="col-lg-8 delivery px-md-3 px-1">
-					<p class="pt-4 fw-bold pb-3 ps-2">Delivery</p>
+					<p class="pt-4 fw-bold pb-3 ps-2">Order Type</p>
 					<div
 						class="d-md-inline-flex justify-content-center align-items-center pb-4"
 					>
@@ -262,7 +262,7 @@
 											class="d-flex align-items-center justify-content-center"
 										></div>
 										<div class="d-flex flex-column px-3">
-											<p class="fw-bold pb-1">Express</p>
+											<p class="fw-bold pb-1">Pre-Order</p>
 											<small class="text-muted pb-1"
 												>Expected<span class="ps-1"
 													>delivery:</span
@@ -272,7 +272,7 @@
 												>1-3 Working Days</small
 											>
 										</div>
-										<p class="fw-bold px-4">$6.00</p>
+										<p class="fw-bold px-4">$0.00</p>
 									</div>
 								</div>
 								<span class="checkmark"></span>
@@ -292,7 +292,7 @@
 											class="d-flex align-items-center justify-content-center"
 										></div>
 										<div class="d-flex flex-column px-3">
-											<p class="fw-bold pb-1">Economy</p>
+											<p class="fw-bold pb-1">Standard</p>
 											<small class="text-muted pb-1"
 												>Expected delivery:</small
 											>
@@ -325,49 +325,7 @@
 			integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
 			crossorigin="anonymous"
 		></script>
-		<!-- <script>
-			var CREATE_PAYMENT_URL = "http://localhost:5014/payment";
-			var EXECUTE_PAYMENT_URL = "http://localhost:5014/execute";
-			const total = document.getElementById("total-total");
-			const totalPayment = total.innerText.slice(1);
-			const delivery = document.getElementById("delivery-total");
-			const deliveryPayment = delivery.innerText.slice(1);
 
-			paypal.Button.render(
-				{
-					env: "sandbox", // Or 'sandbox'
-
-					commit: true, // Show a 'Pay Now' button
-
-					payment: function () {
-						console.log(paypal);
-						return paypal.request
-							.post(CREATE_PAYMENT_URL, {
-								account_id: "{{session['account_id']}}",
-								total: parseInt(totalPayment),
-								delivery: parseInt(deliveryPayment),
-							})
-							.then(function (data) {
-								return data.paymentID;
-							});
-					},
-
-					onAuthorize: function (data) {
-						return paypal.request
-							.post(EXECUTE_PAYMENT_URL, {
-								paymentID: data.paymentID,
-								payerID: data.payerID,
-							})
-							.then(function (res) {
-								alert(res.success);
-								// The payment is complete!
-								// You can now show a confirmation message to the customer
-							});
-					},
-				},
-				"#paypal-button"
-			);
-		</script> -->
 		<script async>
 			const expressDelivery = document.getElementById("express-delivery");
 			const economyDelivery = document.getElementById("economy-delivery");
@@ -376,12 +334,12 @@
 			const totalTotal = document.getElementById("total-total");
 
 			expressDelivery.onclick = function () {
-				deliveryTotal.innerText = "$6";
+				deliveryTotal.innerText = "$0";
 
 				const orderTotal = document.getElementById("order-total");
 				const orderTotalPrice =
 					parseInt(orderTotal.innerText.slice(1)) || 0;
-				totalTotal.innerText = `$${orderTotalPrice + 6}`;
+				totalTotal.innerText = `$${orderTotalPrice + 0}`;
 			};
 			economyDelivery.onclick = function () {
 				deliveryTotal.innerText = "$2";
@@ -424,9 +382,9 @@
 					const result = await response.json();
 					console.log(result);
 					if (result.code === 200) {
-						alert("Payment successful!");
+						alert("You have made your payment via Paypal!");
 					} else {
-						alert("Payment error");
+						alert("Please select a delivery type!");
 					}
 				} catch (e) {
 					showError(e.message);
@@ -511,7 +469,61 @@
 							error
 					);
 				} // error
+
 			});
+
+		Vue.createApp({
+			data() {
+			return {
+				email: "",
+				address1: "",
+				address2: "",
+				address3: "",
+				name: "{{session['name']}}",
+				id : "{{session['account_id']}}",
+			}
+		},
+
+
+        created: function (){
+            console.log(this.id)
+            axios.get(`http://localhost:5013/account/${this.id}`)
+            .then(response => {
+                console.log(response.data)
+                window.location.replace("{{url_for('search_package',_external=True)}}")
+            })
+            .catch(error => {
+                console.log(error.response.data)
+                //will move to .then, it is here for testing only right now
+                //window.location.href = 'https://localhost:5000/search_package'
+            })
+        },
+
+        methods:{
+            account_creation() {
+                console.log('hi')
+                let payload = {
+                    "email": this.email,
+                    "shipping_add": [this.address1,this.address2,this.address3].join(','),
+                    "account_name": this.name ,
+                    "customer_id": this.id
+                }
+                console.log('payload')
+
+                axios.post(`http://localhost:5010/place_order`, payload)
+                    .then(response => {
+                        console.log(response)
+                        window.location.replace("{{url_for('search_package',_external=True)}}")                
+                    })
+                    .catch(error => {
+                        console.log(error.response.data)
+                    })
+                
+            }
+        }
+            
+
+    }).mount('#info')
 		</script>
 	</body>
 </html>

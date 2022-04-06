@@ -1,7 +1,7 @@
 import pika
 
 
-hostname = "localhost" # default hostname
+hostname = "cocktailology" # default hostname
 port = 5672
 connection = pika.BlockingConnection(
     pika.ConnectionParameters(

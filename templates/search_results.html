@@ -113,7 +113,7 @@ img {
           const params = new URLSearchParams(window.location.search)
           var cocktail = params.get('cocktail')
 
-          var serviceURL = `http://127.0.0.1:5020/search_package/${cocktail}`;
+          var serviceURL = `http://localhost:5020/search_package/${cocktail}`;
    
           try {
               const response =
@@ -121,14 +121,17 @@ img {
                  serviceURL, { method: 'GET' }
               );
               const result = await response.json();
+              console.log(result.data)
                if (response.status === 200) {
+                  // console.log(result.data["review_result"])
                   // success case
                   var cocktail = result.data; 
                   var info = cocktail.cocktail_result.data
                   
                   var reviews = cocktail.review_result.data
-                  var ingredients = info.cocktail_ingredients
-
+                  var ingredients =result.data["cocktail_result"]["data"]["cocktail_ingredients"]
+                  console.log(result.data["cocktail_result"]["data"])
+                  
                   var rows = "";
                   rows = " <li class='list-group-item'> <div class='media align-items-lg-center flex-column flex-lg-row p-3'> <div class='media-body order-2 order-lg-1'>";
                   rows += "<h5 class='mt-0 font-weight-bold mb-2'>" + info.cocktail_name + "</h5> ";
