@@ -190,7 +190,7 @@ def updateqtys():
             {
                 "code": 500,
                 "data": {
-                    "qty": 30
+                    "qty": qty
                 },
                 "message": "An error occurred while updating the order. " + str(e)
                 #cocktail.quantity_available
